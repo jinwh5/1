@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>首页</title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <!-- 欢迎信息 -->
+        <div class="jumbotron">
+            <div class="container">
+                <h1 class="display-4">欢迎使用公路施工人员管理系统</h1>
+                <p class="lead">高效管理公路施工项目中的人员信息、考勤记录、项目进度和安全记录</p>
+                <hr class="my-4 border-light opacity-25">
+                <div class="d-flex flex-wrap mt-4">
+                    <a class="btn btn-lg me-2 mb-2" th:href="@{/workers}" role="button">
+                        <i class="fas fa-users me-2"></i>开始管理
+                    </a>
+                    <a class="btn btn-outline-light btn-lg mb-2" href="#features" role="button">
+                        <i class="fas fa-info-circle me-2"></i>了解功能
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="container mb-5">
+            <div class="row g-4 py-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fas fa-users fa-3x me-3"></i>
+                            <div>
+                                <h2 class="counter">5</h2>
+                                <p class="mb-0">工人总数</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fas fa-clipboard-check fa-3x me-3"></i>
+                            <div>
+                                <h2 class="counter">0</h2>
+                                <p class="mb-0">考勤记录</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fas fa-project-diagram fa-3x me-3"></i>
+                            <div>
+                                <h2 class="counter">0</h2>
+                                <p class="mb-0">项目数量</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fas fa-hard-hat fa-3x me-3"></i>
+                            <div>
+                                <h2 class="counter">0</h2>
+                                <p class="mb-0">安全记录</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能卡片区域 -->
+        <div class="container" id="features">
+            <h2 class="text-center mb-4">系统功能</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="card-icon mb-4 text-primary">
+                                <i class="fas fa-users fa-4x"></i>
+                            </div>
+                            <h5 class="card-title">工人管理</h5>
+                            <p class="card-text">管理施工人员的基本信息、联系方式和工作状态，支持灵活查询和筛选</p>
+                            <div class="mt-auto pt-3">
+                                <a th:href="@{/workers}" class="btn btn-outline-primary w-100">
+                                    进入管理 <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="card-icon mb-4 text-success">
+                                <i class="fas fa-clipboard-check fa-4x"></i>
+                            </div>
+                            <h5 class="card-title">考勤管理</h5>
+                            <p class="card-text">记录和查询工人的签到签退情况，自动统计工时并生成报表</p>
+                            <div class="mt-auto pt-3">
+                                <a th:href="@{/attendances}" class="btn btn-outline-success w-100">
+                                    进入管理 <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="card-icon mb-4 text-info">
+                                <i class="fas fa-project-diagram fa-4x"></i>
+                            </div>
+                            <h5 class="card-title">项目管理</h5>
+                            <p class="card-text">跟踪公路施工项目的基本信息、进度和状态，支持甘特图展示</p>
+                            <div class="mt-auto pt-3">
+                                <a th:href="@{/projects}" class="btn btn-outline-info w-100">
+                                    进入管理 <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="card-icon mb-4 text-danger">
+                                <i class="fas fa-hard-hat fa-4x"></i>
+                            </div>
+                            <h5 class="card-title">安全记录</h5>
+                            <p class="card-text">记录和跟踪施工过程中的安全事件，提供安全分析和预警</p>
+                            <div class="mt-auto pt-3">
+                                <a th:href="@{/safety-records}" class="btn btn-outline-danger w-100">
+                                    进入管理 <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 系统信息 -->
+        <div class="container mt-5">
+            <div class="card bg-light border-0">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>系统信息
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><i class="fas fa-bookmark me-2 text-primary"></i><strong>系统名称：</strong>公路施工人员管理系统</p>
+                            <p><i class="fas fa-code-branch me-2 text-primary"></i><strong>版本号：</strong>v1.0.0</p>
+                            <p><i class="fas fa-building me-2 text-primary"></i><strong>开发单位：</strong>XXX公司</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><i class="fas fa-server me-2 text-primary"></i><strong>运行环境：</strong>Java 8 + Spring Boot 2.7.3</p>
+                            <p><i class="fas fa-user-check me-2 text-primary"></i><strong>在线用户：</strong>1</p>
+                            <p><i class="fas fa-clock me-2 text-primary"></i><strong>系统时间：</strong><span id="currentTime"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页面特定的JavaScript -->
+    <th:block layout:fragment="scripts">
+        <script>
+            // 更新当前时间
+            function updateCurrentTime() {
+                var now = new Date();
+                var hours = now.getHours();
+                var minutes = now.getMinutes();
+                var seconds = now.getSeconds();
+                
+                // 格式化时间，确保两位数显示
+                if (minutes < 10) minutes = "0" + minutes;
+                if (seconds < 10) seconds = "0" + seconds;
+                
+                var timeString = now.getFullYear() + '年' + 
+                                (now.getMonth() + 1) + '月' + 
+                                now.getDate() + '日 ' + 
+                                hours + ':' + minutes + ':' + seconds;
+                document.getElementById('currentTime').textContent = timeString;
+            }
+            
+            // 数字计数动画
+            function animateCounter() {
+                $('.counter').each(function() {
+                    $(this).prop('Counter', 0).animate({
+                        Counter: $(this).text()
+                    }, {
+                        duration: 1500,
+                        easing: 'swing',
+                        step: function(now) {
+                            $(this).text(Math.ceil(now));
+                        }
+                    });
+                });
+            }
+            
+            // 页面加载完成后执行
+            $(document).ready(function() {
+                updateCurrentTime();
+                setInterval(updateCurrentTime, 1000);
+                animateCounter();
+                
+                // 平滑滚动
+                $('a[href^="#"]').on('click', function(event) {
+                    var target = $(this.getAttribute('href'));
+                    if(target.length) {
+                        event.preventDefault();
+                        $('html, body').stop().animate({
+                            scrollTop: target.offset().top - 80
+                        }, 800);
+                    }
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html> 

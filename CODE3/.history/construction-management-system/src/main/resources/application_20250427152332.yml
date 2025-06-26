@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:data/construction.db
+    driver-class-name: org.sqlite.JDBC
+    username: 
+    password: 
+  jpa:
+    database-platform: org.hibernate.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+# 天气API配置
+weather:
+  api:
+    key: YOUR_API_KEY  # 需要替换为实际的API密钥
+    url: https://api.weatherapi.com/v1/forecast.json  # 使用 WeatherAPI.com 的API
+
+# 应用配置
+app:
+  schedule:
+    max-continuous-work-hours: 8  # 最大连续工作时间
+    min-rest-hours: 11           # 最小休息时间
+    weather-check-enabled: true  # 启用天气检查 

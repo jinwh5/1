@@ -1,0 +1,61 @@
+[ {
+  "id" : 1,
+  "name" : "张三",
+  "gender" : "男",
+  "age" : 32,
+  "idCard" : "410123198912123456",
+  "phone" : "13800138001",
+  "position" : "施工员",
+  "hireDate" : "2020-05-15",
+  "status" : "在职",
+  "address" : "河南省郑州市金水区",
+  "remarks" : "经验丰富"
+}, {
+  "id" : 2,
+  "name" : "李四",
+  "gender" : "男",
+  "age" : 28,
+  "idCard" : "410123199203123457",
+  "phone" : "13900139002",
+  "position" : "机械操作员",
+  "hireDate" : "2021-03-10",
+  "status" : "在职",
+  "address" : "河南省郑州市二七区",
+  "remarks" : "技术熟练"
+}, {
+  "id" : 3,
+  "name" : "王五",
+  "gender" : "男",
+  "age" : 45,
+  "idCard" : "410123197606123458",
+  "phone" : "13700137003",
+  "position" : "项目经理",
+  "hireDate" : "2018-01-05",
+  "status" : "在职",
+  "address" : "河南省郑州市管城区",
+  "remarks" : "管理能力强"
+}, {
+  "id" : 4,
+  "name" : "赵六",
+  "gender" : "男",
+  "age" : 33,
+  "idCard" : "410123198806123459",
+  "phone" : "13600136004",
+  "position" : "电工",
+  "hireDate" : "2019-07-12",
+  "status" : "在职",
+  "address" : "河南省郑州市惠济区",
+  "remarks" : "持有电工证"
+}, {
+  "id" : 5,
+  "name" : "周七",
+  "gender" : "女",
+  "age" : 29,
+  "idCard" : "410123199208123460",
+  "phone" : "13500135005",
+  "position" : "安全员",
+  "hireDate" : "2020-09-20",
+  "status" : "在职",
+  "address" : "河南省郑州市中原区",
+  "remarks" : "安全意识强"
+} ]

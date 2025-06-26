@@ -1,0 +1,101 @@
+[ {
+  "id" : 1,
+  "workerId" : 1,
+  "date" : "2025-05-13",
+  "checkInTime" : "2025-05-13T07:55:35.61",
+  "checkOutTime" : "2025-05-13T16:05:35.61",
+  "status" : "正常",
+  "workHours" : 8.0,
+  "overtimeHours" : 0.0,
+  "remarks" : "按时上下班"
+}, {
+  "id" : 2,
+  "workerId" : 1,
+  "date" : "2025-05-12",
+  "checkInTime" : "2025-05-12T08:10:35.974",
+  "checkOutTime" : "2025-05-12T16:00:35.974",
+  "status" : "迟到",
+  "workHours" : 7.5,
+  "overtimeHours" : 0.0,
+  "remarks" : "迟到10分钟"
+}, {
+  "id" : 3,
+  "workerId" : 2,
+  "date" : "2025-05-13",
+  "checkInTime" : "2025-05-13T07:55:35.977",
+  "checkOutTime" : "2025-05-13T16:05:35.977",
+  "status" : "正常",
+  "workHours" : 8.0,
+  "overtimeHours" : 0.0,
+  "remarks" : "按时上下班"
+}, {
+  "id" : 4,
+  "workerId" : 2,
+  "date" : "2025-05-12",
+  "checkInTime" : "2025-05-12T08:10:35.98",
+  "checkOutTime" : "2025-05-12T16:00:35.98",
+  "status" : "迟到",
+  "workHours" : 7.5,
+  "overtimeHours" : 0.0,
+  "remarks" : "迟到10分钟"
+}, {
+  "id" : 5,
+  "workerId" : 3,
+  "date" : "2025-05-13",
+  "checkInTime" : "2025-05-13T07:55:35.981",
+  "checkOutTime" : "2025-05-13T16:05:35.981",
+  "status" : "正常",
+  "workHours" : 8.0,
+  "overtimeHours" : 0.0,
+  "remarks" : "按时上下班"
+}, {
+  "id" : 6,
+  "workerId" : 3,
+  "date" : "2025-05-12",
+  "checkInTime" : "2025-05-12T08:10:35.984",
+  "checkOutTime" : "2025-05-12T16:00:35.984",
+  "status" : "迟到",
+  "workHours" : 7.5,
+  "overtimeHours" : 0.0,
+  "remarks" : "迟到10分钟"
+}, {
+  "id" : 7,
+  "workerId" : 4,
+  "date" : "2025-05-13",
+  "checkInTime" : "2025-05-13T07:55:35.987",
+  "checkOutTime" : "2025-05-13T16:05:35.987",
+  "status" : "正常",
+  "workHours" : 8.0,
+  "overtimeHours" : 0.0,
+  "remarks" : "按时上下班"
+}, {
+  "id" : 8,
+  "workerId" : 4,
+  "date" : "2025-05-12",
+  "checkInTime" : "2025-05-12T08:10:35.989",
+  "checkOutTime" : "2025-05-12T16:00:35.989",
+  "status" : "迟到",
+  "workHours" : 7.5,
+  "overtimeHours" : 0.0,
+  "remarks" : "迟到10分钟"
+}, {
+  "id" : 9,
+  "workerId" : 5,
+  "date" : "2025-05-13",
+  "checkInTime" : "2025-05-13T07:55:35.991",
+  "checkOutTime" : "2025-05-13T16:05:35.991",
+  "status" : "正常",
+  "workHours" : 8.0,
+  "overtimeHours" : 0.0,
+  "remarks" : "按时上下班"
+}, {
+  "id" : 10,
+  "workerId" : 5,
+  "date" : "2025-05-12",
+  "checkInTime" : "2025-05-12T08:10:35.994",
+  "checkOutTime" : "2025-05-12T16:00:35.994",
+  "status" : "迟到",
+  "workHours" : 7.5,
+  "overtimeHours" : 0.0,
+  "remarks" : "迟到10分钟"
+} ]

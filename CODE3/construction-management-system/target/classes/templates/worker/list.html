@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>工人管理</title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-users text-primary mr-2"></i>工人列表
+            </h2>
+            <a th:href="@{/workers/add}" class="btn btn-primary">
+                <i class="fas fa-plus-circle mr-1"></i>添加工人
+            </a>
+        </div>
+        
+        <!-- 搜索和筛选 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/workers}" method="get" class="row">
+                    <div class="col-md-3 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">姓名</span>
+                            </div>
+                            <input type="text" class="form-control" name="name" th:value="${name}" placeholder="请输入姓名">
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">职位</span>
+                            </div>
+                            <select class="form-control" name="position">
+                                <option value="">全部</option>
+                                <option value="施工员" th:selected="${position == '施工员'}">施工员</option>
+                                <option value="机械操作员" th:selected="${position == '机械操作员'}">机械操作员</option>
+                                <option value="项目经理" th:selected="${position == '项目经理'}">项目经理</option>
+                                <option value="安全员" th:selected="${position == '安全员'}">安全员</option>
+                                <option value="电工" th:selected="${position == '电工'}">电工</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">状态</span>
+                            </div>
+                            <select class="form-control" name="status">
+                                <option value="">全部</option>
+                                <option value="在职" th:selected="${status == '在职'}">在职</option>
+                                <option value="离职" th:selected="${status == '离职'}">离职</option>
+                                <option value="休假" th:selected="${status == '休假'}">休假</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <i class="fas fa-search mr-1"></i>搜索
+                        </button>
+                        <a th:href="@{/workers}" class="btn btn-secondary">
+                            <i class="fas fa-redo mr-1"></i>重置
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 批量操作 -->
+        <div class="mb-3">
+            <form id="batchForm" th:action="@{/workers/delete-batch}" method="post">
+                <button type="button" id="batchDeleteBtn" class="btn btn-danger" disabled>
+                    <i class="fas fa-trash mr-1"></i>批量删除
+                </button>
+            </form>
+        </div>
+        
+        <!-- 工人列表 -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th width="40px">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="selectAll">
+                                        <label class="custom-control-label" for="selectAll"></label>
+                                    </div>
+                                </th>
+                                <th>ID</th>
+                                <th>姓名</th>
+                                <th>性别</th>
+                                <th>年龄</th>
+                                <th>身份证号</th>
+                                <th>电话</th>
+                                <th>职位</th>
+                                <th>入职日期</th>
+                                <th>状态</th>
+                                <th width="150px">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${workers.empty}">
+                                <td colspan="11" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-info-circle mr-1"></i>暂无工人数据
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:each="worker : ${workers}">
+                                <td>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input worker-checkbox" 
+                                               th:id="${'worker-' + worker.id}" th:value="${worker.id}">
+                                        <label class="custom-control-label" th:for="${'worker-' + worker.id}"></label>
+                                    </div>
+                                </td>
+                                <td th:text="${worker.id}"></td>
+                                <td th:text="${worker.name}"></td>
+                                <td th:text="${worker.gender}"></td>
+                                <td th:text="${worker.age}"></td>
+                                <td th:text="${#strings.length(worker.idCard) > 10 ? 
+                                    #strings.substring(worker.idCard, 0, 6) + '****' + 
+                                    #strings.substring(worker.idCard, #strings.length(worker.idCard) - 4) : worker.idCard}"></td>
+                                <td th:text="${worker.phone}"></td>
+                                <td th:text="${worker.position}"></td>
+                                <td th:text="${#temporals.format(worker.hireDate, 'yyyy-MM-dd')}"></td>
+                                <td>
+                                    <span th:class="${'badge ' + (worker.status == '在职' ? 'badge-success' : 
+                                        (worker.status == '离职' ? 'badge-danger' : 'badge-warning'))}"
+                                          th:text="${worker.status}"></span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/workers/view/{id}(id=${worker.id})}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a th:href="@{/workers/edit/{id}(id=${worker.id})}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/workers/delete/{id}(id=${worker.id})}" 
+                                       class="btn btn-sm btn-danger delete-worker"
+                                       onclick="return confirm('确定要删除该工人吗？')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 分页 -->
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center" th:if="${totalPages > 0}">
+                <div>
+                    显示 <span th:text="${currentPage * 10 + 1}"></span> 至 
+                    <span th:text="${(currentPage * 10) + workers.size()}"></span> 条，
+                    共 <span th:text="${totalItems}"></span> 条记录
+                </div>
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/workers(page=0, size=10, name=${name}, position=${position}, status=${status})}">首页</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/workers(page=${currentPage - 1}, size=10, name=${name}, position=${position}, status=${status})}">上一页</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                            th:classappend="${i == currentPage ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/workers(page=${i}, size=10, name=${name}, position=${position}, status=${status})}" th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/workers(page=${currentPage + 1}, size=10, name=${name}, position=${position}, status=${status})}">下一页</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/workers(page=${totalPages - 1}, size=10, name=${name}, position=${position}, status=${status})}">末页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页面特定的JavaScript -->
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 全选/取消全选
+                $('#selectAll').change(function() {
+                    $('.worker-checkbox').prop('checked', $(this).prop('checked'));
+                    updateBatchDeleteButton();
+                });
+                
+                // 单选框改变时更新全选框状态
+                $('.worker-checkbox').change(function() {
+                    updateSelectAllCheckbox();
+                    updateBatchDeleteButton();
+                });
+                
+                // 更新全选框状态
+                function updateSelectAllCheckbox() {
+                    $('#selectAll').prop('checked', 
+                        $('.worker-checkbox:checked').length === $('.worker-checkbox').length && 
+                        $('.worker-checkbox').length > 0
+                    );
+                }
+                
+                // 更新批量删除按钮状态
+                function updateBatchDeleteButton() {
+                    $('#batchDeleteBtn').prop('disabled', $('.worker-checkbox:checked').length === 0);
+                }
+                
+                // 批量删除
+                $('#batchDeleteBtn').click(function() {
+                    if (confirm('确定要删除选中的工人吗？')) {
+                        // 创建表单并提交
+                        let form = $('#batchForm');
+                        form.empty(); // 清空表单
+                        
+                        $('.worker-checkbox:checked').each(function() {
+                            form.append('<input type="hidden" name="ids" value="' + $(this).val() + '">');
+                        });
+                        
+                        form.submit();
+                    }
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html> 

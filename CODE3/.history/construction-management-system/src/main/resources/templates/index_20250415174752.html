@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>首页</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- 欢迎信息 -->
+        <div class="welcome-section">
+            <h1>公路施工人员管理系统</h1>
+            <p>欢迎使用公路施工人员管理系统，请选择以下模块进行操作</p>
+        </div>
+
+        <!-- 功能区域 -->
+        <div class="row">
+            <div class="col-md-6 col-lg-4">
+                <a th:href="@{/workers}" class="feature-item">
+                    <i class="fas fa-users"></i>
+                    <h4>工人管理</h4>
+                    <p>管理建设项目中的所有工人信息</p>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <a th:href="@{/attendances}" class="feature-item">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h4>考勤管理</h4>
+                    <p>记录和管理工人的考勤信息</p>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <a th:href="@{/projects}" class="feature-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <h4>项目管理</h4>
+                    <p>管理各类建设项目的信息</p>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <a th:href="@{/schedules}" class="feature-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h4>排班管理</h4>
+                    <p>安排和管理工人的工作排班</p>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <a th:href="@{/safety-records}" class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>安全记录</h4>
+                    <p>记录和管理地面安全事件</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

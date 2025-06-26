@@ -1,0 +1,223 @@
+package com.highway.controller;
+
+import com.highway.model.Attendance;
+import com.highway.model.Worker;
+import com.highway.service.interfaces.AttendanceService;
+import com.highway.service.interfaces.WorkerService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * 考勤管理控制器
+ */
+@Controller
+@RequestMapping("/attendance")
+@RequiredArgsConstructor
+public class AttendanceController {
+    // 考勤服务
+    private final AttendanceService attendanceService;
+    // 工人服务
+    private final WorkerService workerService;
+    
+    /**
+     * 考勤列表页面
+     */
+    @GetMapping
+    public String listAttendance(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long workerId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) String status,
+            Model model
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<Attendance> attendancePage;
+        
+        // 根据条件查询
+        if (workerId != null) {
+            attendancePage = attendanceService.getAttendanceByWorker(workerId, pageable);
+            model.addAttribute("workerId", workerId);
+            model.addAttribute("workerName", workerService.getWorkerById(workerId).getName());
+        } else if (startDate != null && endDate != null) {
+            attendancePage = attendanceService.getAttendanceByDateRange(startDate, endDate, pageable);
+            model.addAttribute("startDate", startDate);
+            model.addAttribute("endDate", endDate);
+        } else if (status != null && !status.isEmpty()) {
+            attendancePage = attendanceService.getAttendanceByStatus(status, pageable);
+            model.addAttribute("status", status);
+        } else {
+            attendancePage = attendanceService.getAllAttendance(pageable);
+        }
+        
+        // 获取所有工人列表，用于选择框
+        List<Worker> workers = workerService.getAllWorkers();
+        
+        model.addAttribute("attendanceRecords", attendancePage.getContent());
+        model.addAttribute("workers", workers);
+        model.addAttribute("currentPage", attendancePage.getNumber());
+        model.addAttribute("totalPages", attendancePage.getTotalPages());
+        model.addAttribute("totalItems", attendancePage.getTotalElements());
+        
+        return "attendance/list";
+    }
+    
+    /**
+     * 添加考勤记录表单页面
+     */
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("attendance", new Attendance());
+        model.addAttribute("workers", workerService.getAllWorkers());
+        return "attendance/form";
+    }
+    
+    /**
+     * 编辑考勤记录表单页面
+     */
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Attendance attendance = attendanceService.getAttendanceById(id);
+        model.addAttribute("attendance", attendance);
+        model.addAttribute("workers", workerService.getAllWorkers());
+        return "attendance/form";
+    }
+    
+    /**
+     * 保存考勤记录
+     */
+    @PostMapping("/save")
+    public String saveAttendance(
+            @ModelAttribute("attendance") @DateTimeFormat(pattern = "yyyy-MM-dd") Attendance attendance, 
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(value = "checkInTime", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime checkInTime,
+            @RequestParam(value = "checkOutTime", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime checkOutTime,
+            RedirectAttributes redirectAttributes) {
+        
+        // 手动设置日期和时间
+        attendance.setDate(date);
+        attendance.setCheckInTime(checkInTime);
+        attendance.setCheckOutTime(checkOutTime);
+        
+        // 如果是新增考勤并且没有设置工时，自动计算工时
+        if (attendance.getId() == null && 
+            attendance.getWorkHours() == null && 
+            attendance.getCheckInTime() != null && 
+            attendance.getCheckOutTime() != null) {
+            // 计算工作时长（小时）
+            double hours = calculateHours(attendance.getCheckInTime(), attendance.getCheckOutTime());
+            attendance.setWorkHours(hours);
+        }
+        
+        attendanceService.saveAttendance(attendance);
+        redirectAttributes.addFlashAttribute("message", "考勤记录保存成功");
+        return "redirect:/attendance";
+    }
+    
+    /**
+     * 查看考勤记录详情
+     */
+    @GetMapping("/view/{id}")
+    public String viewAttendance(@PathVariable Long id, Model model) {
+        Attendance attendance = attendanceService.getAttendanceById(id);
+        Worker worker = workerService.getWorkerById(attendance.getWorkerId());
+        
+        model.addAttribute("attendance", attendance);
+        model.addAttribute("worker", worker);
+        return "attendance/view";
+    }
+    
+    /**
+     * 删除考勤记录
+     */
+    @GetMapping("/delete/{id}")
+    public String deleteAttendance(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        attendanceService.deleteAttendance(id);
+        redirectAttributes.addFlashAttribute("message", "考勤记录删除成功");
+        return "redirect:/attendance";
+    }
+    
+    /**
+     * 获取工人的考勤记录
+     */
+    @GetMapping("/worker/{workerId}")
+    public String getWorkerAttendance(
+            @PathVariable Long workerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model
+    ) {
+        Worker worker = workerService.getWorkerById(workerId);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<Attendance> attendancePage = attendanceService.getAttendanceByWorker(workerId, pageable);
+        
+        model.addAttribute("worker", worker);
+        model.addAttribute("attendanceRecords", attendancePage.getContent());
+        model.addAttribute("currentPage", attendancePage.getNumber());
+        model.addAttribute("totalPages", attendancePage.getTotalPages());
+        model.addAttribute("totalItems", attendancePage.getTotalElements());
+        
+        return "attendance/worker-attendance";
+    }
+    
+    /**
+     * 考勤统计页面
+     */
+    @GetMapping("/statistics")
+    public String attendanceStatistics(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            Model model
+    ) {
+        // 如果没有指定日期范围，默认为当前月
+        if (startDate == null) {
+            LocalDate now = LocalDate.now();
+            startDate = now.withDayOfMonth(1);
+            endDate = now.withDayOfMonth(now.lengthOfMonth());
+        }
+        
+        // 获取统计数据
+        long totalRecords = attendanceService.countAttendanceByDateRange(startDate, endDate);
+        long normalRecords = attendanceService.countAttendanceByStatusAndDateRange("正常", startDate, endDate);
+        long lateRecords = attendanceService.countAttendanceByStatusAndDateRange("迟到", startDate, endDate);
+        long earlyLeaveRecords = attendanceService.countAttendanceByStatusAndDateRange("早退", startDate, endDate);
+        long absentRecords = attendanceService.countAttendanceByStatusAndDateRange("缺勤", startDate, endDate);
+        
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("totalRecords", totalRecords);
+        model.addAttribute("normalRecords", normalRecords);
+        model.addAttribute("lateRecords", lateRecords);
+        model.addAttribute("earlyLeaveRecords", earlyLeaveRecords);
+        model.addAttribute("absentRecords", absentRecords);
+        
+        // 获取工人考勤统计数据
+        List<Object[]> workerStats = attendanceService.getWorkerAttendanceStatsByDateRange(startDate, endDate);
+        model.addAttribute("workerStats", workerStats);
+        
+        return "attendance/statistics";
+    }
+    
+    /**
+     * 计算两个时间之间的小时数
+     */
+    private double calculateHours(LocalDateTime start, LocalDateTime end) {
+        // 计算时间差（分钟）
+        long minutes = java.time.Duration.between(start, end).toMinutes();
+        // 转换为小时（保留一位小数）
+        return Math.round(minutes / 6.0) / 10.0;
+    }
+} 

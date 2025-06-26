@@ -1,0 +1,21 @@
+[ {
+  "id" : 1,
+  "workerId" : 1,
+  "date" : "2025-04-15",
+  "checkInTime" : "2025-04-15T20:30:00",
+  "checkOutTime" : "2025-04-15T22:30:00",
+  "status" : "正常",
+  "workHours" : 2.0,
+  "overtimeHours" : 0.0,
+  "remarks" : ""
+}, {
+  "id" : 2,
+  "workerId" : 1,
+  "date" : "2025-04-15",
+  "checkInTime" : "2025-04-15T20:37:00",
+  "checkOutTime" : "2025-04-15T22:37:00",
+  "status" : "正常",
+  "workHours" : 2.0,
+  "overtimeHours" : 0.0,
+  "remarks" : ""
+} ]

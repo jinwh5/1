@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>排班管理</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <h1 class="h3 mb-4 text-gray-800">排班管理</h1>
+            
+            <!-- 搜索表单 -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">搜索排班</h6>
+                </div>
+                <div class="card-body">
+                    <form class="row g-3" id="searchForm">
+                        <div class="col-md-3">
+                            <label for="workerId" class="form-label">工人ID</label>
+                            <input type="number" class="form-control" id="workerId" name="workerId">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="projectId" class="form-label">项目ID</label>
+                            <input type="number" class="form-control" id="projectId" name="projectId">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="date" class="form-label">日期</label>
+                            <input type="date" class="form-control" id="date" name="date">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="location" class="form-label">地点</label>
+                            <input type="text" class="form-control" id="location" name="location">
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">搜索</button>
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createScheduleModal">
+                                新建排班
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- 排班列表 -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">排班列表</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="scheduleTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>工人ID</th>
+                                    <th>项目ID</th>
+                                    <th>日期</th>
+                                    <th>班次</th>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
+                                    <th>地点</th>
+                                    <th>状态</th>
+                                    <th>天气状况</th>
+                                    <th>是否适合施工</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="schedule : ${schedules}">
+                                    <td th:text="${schedule.id}"></td>
+                                    <td th:text="${schedule.workerId}"></td>
+                                    <td th:text="${schedule.projectId}"></td>
+                                    <td th:text="${#temporals.format(schedule.date, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${schedule.shiftType}"></td>
+                                    <td th:text="${#temporals.format(schedule.startTime, 'HH:mm')}"></td>
+                                    <td th:text="${#temporals.format(schedule.endTime, 'HH:mm')}"></td>
+                                    <td th:text="${schedule.location}"></td>
+                                    <td th:text="${schedule.status}"></td>
+                                    <td th:text="${schedule.weatherCondition}"></td>
+                                    <td>
+                                        <span th:if="${schedule.suitableForWork}" class="badge bg-success">适合</span>
+                                        <span th:unless="${schedule.suitableForWork}" class="badge bg-danger">不适合</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" th:onclick="'editSchedule(' + ${schedule.id} + ')'">编辑</button>
+                                        <button class="btn btn-sm btn-danger" th:onclick="'deleteSchedule(' + ${schedule.id} + ')'">删除</button>
+                                        <button class="btn btn-sm btn-info" th:onclick="'checkConflict(' + ${schedule.id} + ')'">检查冲突</button>
+                                        <button class="btn btn-sm btn-warning" th:onclick="'updateWeather(' + ${schedule.id} + ')'">更新天气</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 创建排班模态框 -->
+        <div class="modal fade" id="createScheduleModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">新建排班</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="createScheduleForm">
+                            <div class="mb-3">
+                                <label for="createWorkerId" class="form-label">工人ID</label>
+                                <input type="number" class="form-control" id="createWorkerId" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="createProjectId" class="form-label">项目ID</label>
+                                <input type="number" class="form-control" id="createProjectId" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="createDate" class="form-label">日期</label>
+                                <input type="date" class="form-control" id="createDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="createShiftType" class="form-label">班次</label>
+                                <select class="form-select" id="createShiftType" required>
+                                    <option value="早班">早班</option>
+                                    <option value="中班">中班</option>
+                                    <option value="晚班">晚班</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="createStartTime" class="form-label">开始时间</label>
+                                <input type="time" class="form-control" id="createStartTime" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="createEndTime" class="form-label">结束时间</label>
+                                <input type="time" class="form-control" id="createEndTime" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="createLocation" class="form-label">地点</label>
+                                <input type="text" class="form-control" id="createLocation" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="createSchedule()">创建</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <script th:src="@{/js/schedule.js}"></script>
+    </th:block>
+</body>
+</html> 

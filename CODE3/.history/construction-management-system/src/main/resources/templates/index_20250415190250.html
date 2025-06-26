@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+
+<head>
+    <title>首页 - 公路施工人员管理系统</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- 页面标题 -->
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">控制面板</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-custom">
+                        <li class="breadcrumb-item"><a href="/"><i class="bi bi-house-fill me-1"></i>首页</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">控制面板</li>
+                    </ol>
+                </nav>
+            </div>
+            <div>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-outline-primary" id="refresh-dashboard">
+                        <i class="bi bi-arrow-clockwise me-1"></i>刷新数据
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#dashboardSettingsModal">
+                        <i class="bi bi-gear-fill me-1"></i>设置
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 欢迎卡片 -->
+        <div class="card border-0 mb-4 shadow-sm">
+            <div class="card-body welcome-card">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold mb-3">欢迎使用公路施工人员管理系统</h2>
+                        <p class="fs-5 mb-0 opacity-75">本系统提供施工人员信息管理、考勤记录、工资核算等功能，帮助您高效管理公路施工团队。</p>
+                    </div>
+                    <div class="col-md-4 d-none d-md-flex align-items-center justify-content-end">
+                        <i class="bi bi-building-fill-gear" style="font-size: 8rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 统计卡片 -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stat-icon bg-primary text-white me-3">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div>
+                                <h6 class="card-title mb-0 text-muted">施工人员总数</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h2 class="fs-1 fw-bold mb-0" th:text="${personnelCount ?: 0}">0</h2>
+                            <small class="ms-3 text-success"><i class="bi bi-arrow-up-short"></i>5.2%</small>
+                        </div>
+                        <div class="progress mt-3" style="height: 6px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 py-2">
+                        <small class="text-muted d-flex justify-content-between">
+                            <span><i class="bi bi-calendar-week me-1"></i>本月新增: 12人</span>
+                            <a href="/personnel" class="text-primary text-decoration-none">查看详情</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stat-icon bg-success text-white me-3">
+                                <i class="bi bi-person-check-fill"></i>
+                            </div>
+                            <div>
+                                <h6 class="card-title mb-0 text-muted">在岗人员</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h2 class="fs-1 fw-bold mb-0" th:text="${activePersonnelCount ?: 0}">0</h2>
+                            <small class="ms-3 text-success"><i class="bi bi-arrow-up-short"></i>2.8%</small>
+                        </div>
+                        <div class="progress mt-3" style="height: 6px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 92%;" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 py-2">
+                        <small class="text-muted d-flex justify-content-between">
+                            <span><i class="bi bi-person-x-fill me-1"></i>请假人数: 14人</span>
+                            <a href="/attendance" class="text-primary text-decoration-none">查看详情</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stat-icon bg-warning text-white me-3">
+                                <i class="bi bi-clipboard2-check-fill"></i>
+                            </div>
+                            <div>
+                                <h6 class="card-title mb-0 text-muted">考勤记录数</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h2 class="fs-1 fw-bold mb-0" th:text="${attendanceCount ?: 0}">0</h2>
+                            <small class="ms-3 text-success"><i class="bi bi-arrow-up-short"></i>12.4%</small>
+                        </div>
+                        <div class="progress mt-3" style="height: 6px;">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 78%;" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 py-2">
+                        <small class="text-muted d-flex justify-content-between">
+                            <span><i class="bi bi-calendar-day me-1"></i>今日记录: 156条</span>
+                            <a href="/attendance" class="text-primary text-decoration-none">查看详情</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stat-icon bg-danger text-white me-3">
+                                <i class="bi bi-cash-coin"></i>
+                            </div>
+                            <div>
+                                <h6 class="card-title mb-0 text-muted">工资发放总额</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h2 class="fs-1 fw-bold mb-0" th:text="${salaryTotal ?: '0元'}">0元</h2>
+                            <small class="ms-3 text-danger"><i class="bi bi-arrow-up-short"></i>8.7%</small>
+                        </div>
+                        <div class="progress mt-3" style="height: 6px;">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 py-2">
+                        <small class="text-muted d-flex justify-content-between">
+                            <span><i class="bi bi-calendar-month me-1"></i>上月总额: 1,152,400元</span>
+                            <a href="/salary" class="text-primary text-decoration-none">查看详情</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 图表和功能区 -->
+        <div class="row g-4 mb-4">
+            <!-- 出勤率统计图表 -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">出勤率统计</h5>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                本月
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">本周</a></li>
+                                <li><a class="dropdown-item" href="#">本月</a></li>
+                                <li><a class="dropdown-item" href="#">本季度</a></li>
+                                <li><a class="dropdown-item" href="#">本年度</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="attendanceChart" class="chart-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 快速导航 -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-transparent">
+                        <h5 class="card-title mb-0">快速导航</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <a href="/personnel/add" class="btn btn-light d-flex flex-column align-items-center p-4 h-100 text-decoration-none">
+                                    <i class="bi bi-person-plus-fill text-primary fs-1 mb-2"></i>
+                                    <span>添加人员</span>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="/attendance/record" class="btn btn-light d-flex flex-column align-items-center p-4 h-100 text-decoration-none">
+                                    <i class="bi bi-calendar-check-fill text-success fs-1 mb-2"></i>
+                                    <span>考勤记录</span>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="/salary/payment" class="btn btn-light d-flex flex-column align-items-center p-4 h-100 text-decoration-none">
+                                    <i class="bi bi-cash-stack text-danger fs-1 mb-2"></i>
+                                    <span>工资发放</span>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="/personnel/list" class="btn btn-light d-flex flex-column align-items-center p-4 h-100 text-decoration-none">
+                                    <i class="bi bi-people text-warning fs-1 mb-2"></i>
+                                    <span>人员列表</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 仪表盘设置模态框 -->
+        <div class="modal fade" id="dashboardSettingsModal" tabindex="-1" aria-labelledby="dashboardSettingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="dashboardSettingsModalLabel">仪表盘设置</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted">自定义您的仪表盘显示选项：</p>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showWelcomeCard" checked>
+                                <label class="form-check-label" for="showWelcomeCard">显示欢迎卡片</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showStatisticsCards" checked>
+                                <label class="form-check-label" for="showStatisticsCards">显示统计卡片</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showAttendanceChart" checked>
+                                <label class="form-check-label" for="showAttendanceChart">显示出勤率图表</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showRecentProjects" checked>
+                                <label class="form-check-label" for="showRecentProjects">显示近期项目</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showSafetyRecords" checked>
+                                <label class="form-check-label" for="showSafetyRecords">显示安全记录</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary">保存设置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页面特定脚本 -->
+    <th:block layout:fragment="scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // 出勤率统计图表
+                const attendanceChartCtx = document.getElementById('attendanceChart');
+                const attendanceChart = new Chart(attendanceChartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1日', '2日', '3日', '4日', '5日', '6日', '7日', '8日', '9日', '10日', '11日', '12日', '13日', '14日'],
+                        datasets: [{
+                            label: '出勤率',
+                            data: [95, 96, 94, 97, 92, 88, 85, 90, 92, 94, 96, 98, 95, 93],
+                            fill: {
+                                target: 'origin',
+                                above: 'rgba(13, 110, 253, 0.1)',
+                            },
+                            borderColor: '#0d6efd',
+                            tension: 0.3,
+                            pointBackgroundColor: '#0d6efd',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 80,
+                                max: 100,
+                                grid: {
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false,
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    maxRotation: 0,
+                                    autoSkip: true,
+                                    maxTicksLimit: 7
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.raw + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // 刷新仪表盘按钮
+                document.getElementById('refresh-dashboard').addEventListener('click', function() {
+                    // 显示加载状态
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 加载中...';
+                    this.disabled = true;
+                    
+                    // 模拟加载
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i>刷新数据';
+                        this.disabled = false;
+                        
+                        // 显示成功消息
+                        const alertContainer = document.createElement('div');
+                        alertContainer.className = 'alert alert-success alert-dismissible fade show';
+                        alertContainer.setAttribute('role', 'alert');
+                        alertContainer.innerHTML = `
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <span>仪表盘数据已更新</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        `;
+                        
+                        // 添加到页面顶部
+                        const mainContent = document.querySelector('main');
+                        mainContent.insertBefore(alertContainer, mainContent.firstChild);
+                        
+                        // 5秒后自动关闭
+                        setTimeout(() => {
+                            const bsAlert = new bootstrap.Alert(alertContainer);
+                            bsAlert.close();
+                        }, 5000);
+                    }, 1500);
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html> 

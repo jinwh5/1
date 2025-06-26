@@ -1,0 +1,133 @@
+/* 排班管理页面样式 */
+
+/* 搜索表单样式 */
+.search-form {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.search-form .form-group {
+    margin-bottom: 15px;
+}
+
+.search-form label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.search-form .btn-group {
+    margin-top: 10px;
+}
+
+/* 排班列表样式 */
+.schedule-table {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+.schedule-table th,
+.schedule-table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+}
+
+.schedule-table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.schedule-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+/* 状态标签样式 */
+.status-badge {
+    padding: 0.25em 0.6em;
+    font-size: 0.875em;
+    font-weight: 500;
+    border-radius: 0.25rem;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.status-approved {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.status-rejected {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+/* 天气信息样式 */
+.weather-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.weather-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.weather-suitable {
+    color: #28a745;
+}
+
+.weather-unsuitable {
+    color: #dc3545;
+}
+
+/* 操作按钮样式 */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.action-buttons .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* 模态框样式 */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+/* 响应式布局调整 */
+@media (max-width: 768px) {
+    .search-form .form-group {
+        margin-bottom: 10px;
+    }
+    
+    .schedule-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+} 

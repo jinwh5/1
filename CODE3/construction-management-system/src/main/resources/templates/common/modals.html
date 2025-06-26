@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- 通用模态框组件 -->
+    <div th:fragment="commonModals">
+        <!-- 删除确认模态框 -->
+        <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="deleteConfirmModalLabel">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>确认删除
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="关闭"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>您确定要删除这条记录吗？此操作无法撤销。</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">确认删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 仪表盘设置模态框 -->
+        <div class="modal fade" id="dashboardSettingsModal" tabindex="-1" aria-labelledby="dashboardSettingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="dashboardSettingsModalLabel">
+                            <i class="bi bi-gear-fill me-2"></i>仪表盘设置
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="关闭"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="dashboardSettingsForm">
+                            <div class="mb-3">
+                                <label class="form-label">显示卡片</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="showWelcomeCard" checked>
+                                    <label class="form-check-label" for="showWelcomeCard">欢迎卡片</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="showStatisticsCards" checked>
+                                    <label class="form-check-label" for="showStatisticsCards">统计卡片</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="showCharts" checked>
+                                    <label class="form-check-label" for="showCharts">图表</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="showProjectList" checked>
+                                    <label class="form-check-label" for="showProjectList">项目列表</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="showSafetyRecords" checked>
+                                    <label class="form-check-label" for="showSafetyRecords">安全记录</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">刷新时间间隔</label>
+                                <select class="form-select" id="dashboardRefreshInterval">
+                                    <option value="0">不自动刷新</option>
+                                    <option value="60000">每分钟</option>
+                                    <option value="300000">每5分钟</option>
+                                    <option value="600000">每10分钟</option>
+                                    <option value="1800000">每30分钟</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="saveDashboardSettings">保存设置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 人员档案详情模态框 -->
+        <div class="modal fade" id="personnelDetailModal" tabindex="-1" aria-labelledby="personnelDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title" id="personnelDetailModalLabel">
+                            <i class="bi bi-person-badge-fill me-2"></i>人员档案详情
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="关闭"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center mb-4" id="personnelLoading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">加载中...</span>
+                            </div>
+                            <p class="mt-2">正在加载人员信息...</p>
+                        </div>
+                        <div id="personnelDetailContent" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="avatar-container mb-3">
+                                        <img src="" alt="人员头像" id="personnelAvatar" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                                    </div>
+                                    <h5 id="personnelName">加载中...</h5>
+                                    <p class="text-muted" id="personnelId">工号: ------</p>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <small class="text-muted">性别</small>
+                                                <p id="personnelGender">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <small class="text-muted">年龄</small>
+                                                <p id="personnelAge">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <small class="text-muted">联系电话</small>
+                                                <p id="personnelPhone">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <small class="text-muted">身份证号</small>
+                                                <p id="personnelIdCard">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <small class="text-muted">工种/职位</small>
+                                                <p id="personnelPosition">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <small class="text-muted">入职日期</small>
+                                                <p id="personnelHireDate">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="info-item">
+                                                <small class="text-muted">家庭住址</small>
+                                                <p id="personnelAddress">--</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold"><i class="bi bi-card-checklist me-2"></i>资质证书</h6>
+                                    <ul class="list-group list-group-flush mb-3" id="personnelCertificates">
+                                        <li class="list-group-item text-center text-muted">暂无资质证书信息</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold"><i class="bi bi-briefcase-fill me-2"></i>项目参与记录</h6>
+                                    <ul class="list-group list-group-flush" id="personnelProjects">
+                                        <li class="list-group-item text-center text-muted">暂无项目参与记录</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="personnelError" style="display: none;">
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                                <span id="personnelErrorMessage">加载人员信息失败</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="editPersonnel">编辑信息</button>
+                        <button type="button" class="btn btn-outline-info" id="printPersonnelInfo">
+                            <i class="bi bi-printer-fill me-1"></i>打印
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导入数据模态框 -->
+        <div class="modal fade" id="importDataModal" tabindex="-1" aria-labelledby="importDataModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="importDataModalLabel">
+                            <i class="bi bi-file-earmark-excel-fill me-2"></i>导入数据
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="关闭"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="importDataForm" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="importFile" class="form-label">选择Excel文件</label>
+                                <input class="form-control" type="file" id="importFile" accept=".xlsx, .xls" required>
+                                <div class="form-text">
+                                    支持的文件格式: .xlsx, .xls (Excel文件)
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">导入选项</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="updateExisting" checked>
+                                    <label class="form-check-label" for="updateExisting">
+                                        更新已存在的记录
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="skipErrors">
+                                    <label class="form-check-label" for="skipErrors">
+                                        跳过错误行继续导入
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="template-download">
+                                <p class="mb-2"><i class="bi bi-download me-1"></i>下载导入模板:</p>
+                                <div class="d-flex">
+                                    <a href="/templates/personnel_import_template.xlsx" class="btn btn-sm btn-outline-success me-2">
+                                        人员导入模板
+                                    </a>
+                                    <a href="/templates/attendance_import_template.xlsx" class="btn btn-sm btn-outline-success me-2">
+                                        考勤导入模板
+                                    </a>
+                                    <a href="/templates/salary_import_template.xlsx" class="btn btn-sm btn-outline-success">
+                                        工资导入模板
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-success" id="startImport">开始导入</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 消息通知模态框 -->
+        <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="notificationModalLabel">
+                            <i class="bi bi-bell-fill me-2"></i>系统通知
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="关闭"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group notification-list">
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">系统更新通知</div>
+                                    <p class="mb-1">系统将于今晚22:00-23:00进行例行维护，请安排好工作。</p>
+                                    <small class="text-muted">2023-11-15 09:30</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">新</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">考勤提醒</div>
+                                    <p class="mb-1">本月考勤统计已完成，请各部门负责人进行确认。</p>
+                                    <small class="text-muted">2023-11-10 10:15</small>
+                                </div>
+                                <span class="badge bg-secondary rounded-pill">已读</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">工资发放通知</div>
+                                    <p class="mb-1">10月份工资已发放，请登录系统查看详情。</p>
+                                    <small class="text-muted">2023-11-05 16:45</small>
+                                </div>
+                                <span class="badge bg-secondary rounded-pill">已读</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="markAllRead">全部标为已读</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

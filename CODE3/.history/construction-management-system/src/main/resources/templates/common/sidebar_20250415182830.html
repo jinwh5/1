@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <!-- 侧边栏组件 -->
+    <div th:fragment="sidebar" class="sidebar" id="sidebar">
+        <!-- 侧边栏标题 -->
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-brand">
+                <img src="/img/logo.png" alt="Logo" />
+                <span>施工管理系统</span>
+            </a>
+            <button type="button" class="btn-close text-reset d-lg-none" id="closeSidebar" aria-label="关闭"></button>
+        </div>
+        
+        <!-- 用户信息 -->
+        <div class="sidebar-user">
+            <img th:src="${session.user != null ? session.user.avatar : '/img/default-avatar.png'}" alt="用户头像" class="sidebar-user-avatar">
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-name" th:text="${session.user != null ? session.user.name : '未登录'}">用户名</div>
+                <div class="sidebar-user-role" th:text="${session.user != null ? session.user.role : '访客'}">用户角色</div>
+            </div>
+        </div>
+        
+        <!-- 侧边栏菜单 -->
+        <div class="sidebar-menu">
+            <!-- 主要菜单 -->
+            <div class="sidebar-menu-title">主要功能</div>
+            
+            <a th:href="@{/dashboard}" class="sidebar-menu-item" th:classappend="${page == 'dashboard' ? 'active' : ''}">
+                <i class="bi bi-house-door sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">首页</span>
+            </a>
+            
+            <!-- 施工人员管理菜单 -->
+            <a href="javascript:void(0)" class="sidebar-menu-item" th:classappend="${page == 'personnel' ? 'active' : ''}" 
+               data-bs-toggle="collapse" data-bs-target="#personnelMenu" aria-expanded="false">
+                <i class="bi bi-people sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">人员管理</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <div class="sidebar-submenu collapse" th:classappend="${page == 'personnel' ? 'show' : ''}" id="personnelMenu">
+                <a th:href="@{/personnel/list}" class="sidebar-submenu-item" th:classappend="${subpage == 'personnel-list' ? 'active' : ''}">人员列表</a>
+                <a th:href="@{/personnel/attendance}" class="sidebar-submenu-item" th:classappend="${subpage == 'attendance' ? 'active' : ''}">考勤管理</a>
+                <a th:href="@{/personnel/qualifications}" class="sidebar-submenu-item" th:classappend="${subpage == 'qualifications' ? 'active' : ''}">资质证书</a>
+                <a th:href="@{/personnel/training}" class="sidebar-submenu-item" th:classappend="${subpage == 'training' ? 'active' : ''}">培训记录</a>
+            </div>
+            
+            <!-- 项目管理菜单 -->
+            <a href="javascript:void(0)" class="sidebar-menu-item" th:classappend="${page == 'projects' ? 'active' : ''}"
+               data-bs-toggle="collapse" data-bs-target="#projectsMenu" aria-expanded="false">
+                <i class="bi bi-clipboard-check sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">项目管理</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <div class="sidebar-submenu collapse" th:classappend="${page == 'projects' ? 'show' : ''}" id="projectsMenu">
+                <a th:href="@{/projects/list}" class="sidebar-submenu-item" th:classappend="${subpage == 'projects-list' ? 'active' : ''}">项目列表</a>
+                <a th:href="@{/projects/progress}" class="sidebar-submenu-item" th:classappend="${subpage == 'progress' ? 'active' : ''}">进度跟踪</a>
+                <a th:href="@{/projects/cost}" class="sidebar-submenu-item" th:classappend="${subpage == 'cost' ? 'active' : ''}">成本控制</a>
+                <a th:href="@{/projects/quality}" class="sidebar-submenu-item" th:classappend="${subpage == 'quality' ? 'active' : ''}">质量管理</a>
+            </div>
+            
+            <!-- 设备管理菜单 -->
+            <a href="javascript:void(0)" class="sidebar-menu-item" th:classappend="${page == 'equipment' ? 'active' : ''}"
+               data-bs-toggle="collapse" data-bs-target="#equipmentMenu" aria-expanded="false">
+                <i class="bi bi-truck sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">设备管理</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <div class="sidebar-submenu collapse" th:classappend="${page == 'equipment' ? 'show' : ''}" id="equipmentMenu">
+                <a th:href="@{/equipment/list}" class="sidebar-submenu-item" th:classappend="${subpage == 'equipment-list' ? 'active' : ''}">设备列表</a>
+                <a th:href="@{/equipment/maintenance}" class="sidebar-submenu-item" th:classappend="${subpage == 'maintenance' ? 'active' : ''}">维护保养</a>
+                <a th:href="@{/equipment/allocation}" class="sidebar-submenu-item" th:classappend="${subpage == 'allocation' ? 'active' : ''}">调度分配</a>
+            </div>
+            
+            <!-- 安全管理菜单 -->
+            <a href="javascript:void(0)" class="sidebar-menu-item" th:classappend="${page == 'safety' ? 'active' : ''}"
+               data-bs-toggle="collapse" data-bs-target="#safetyMenu" aria-expanded="false">
+                <i class="bi bi-shield-check sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">安全管理</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <div class="sidebar-submenu collapse" th:classappend="${page == 'safety' ? 'show' : ''}" id="safetyMenu">
+                <a th:href="@{/safety/inspections}" class="sidebar-submenu-item" th:classappend="${subpage == 'inspections' ? 'active' : ''}">安全检查</a>
+                <a th:href="@{/safety/incidents}" class="sidebar-submenu-item" th:classappend="${subpage == 'incidents' ? 'active' : ''}">事故记录</a>
+                <a th:href="@{/safety/measures}" class="sidebar-submenu-item" th:classappend="${subpage == 'measures' ? 'active' : ''}">安全措施</a>
+            </div>
+            
+            <!-- 数据分析菜单 -->
+            <div class="sidebar-menu-title">数据分析</div>
+            
+            <a th:href="@{/analytics/dashboard}" class="sidebar-menu-item" th:classappend="${page == 'analytics' ? 'active' : ''}">
+                <i class="bi bi-bar-chart-line sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">数据看板</span>
+            </a>
+            
+            <a th:href="@{/analytics/reports}" class="sidebar-menu-item" th:classappend="${page == 'reports' ? 'active' : ''}">
+                <i class="bi bi-file-earmark-bar-graph sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">报表中心</span>
+            </a>
+            
+            <!-- 系统设置菜单 -->
+            <div class="sidebar-menu-title">系统设置</div>
+            
+            <a th:href="@{/system/users}" class="sidebar-menu-item" th:classappend="${page == 'users' ? 'active' : ''}">
+                <i class="bi bi-person-gear sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">用户管理</span>
+            </a>
+            
+            <a th:href="@{/system/roles}" class="sidebar-menu-item" th:classappend="${page == 'roles' ? 'active' : ''}">
+                <i class="bi bi-person-lock sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">角色权限</span>
+            </a>
+            
+            <a th:href="@{/system/settings}" class="sidebar-menu-item" th:classappend="${page == 'settings' ? 'active' : ''}">
+                <i class="bi bi-gear sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">系统设置</span>
+            </a>
+            
+            <a th:href="@{/system/logs}" class="sidebar-menu-item" th:classappend="${page == 'logs' ? 'active' : ''}">
+                <i class="bi bi-journal-text sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">系统日志</span>
+            </a>
+        </div>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <a href="javascript:void(0)" class="sidebar-footer-btn" id="toggleSidebar" title="折叠菜单">
+                <i class="bi bi-chevron-double-left"></i>
+            </a>
+            <a th:href="@{/system/help}" class="sidebar-footer-btn" title="帮助中心">
+                <i class="bi bi-question-circle"></i>
+            </a>
+            <a th:href="@{/logout}" class="sidebar-footer-btn" title="退出登录">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+            <div class="sidebar-version">v1.0.0</div>
+        </div>
+    </div>
+
+    <!-- 侧边栏JavaScript -->
+    <script th:fragment="sidebarScript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // 侧边栏切换
+            const toggleSidebar = document.getElementById('toggleSidebar');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            if(toggleSidebar) {
+                toggleSidebar.addEventListener('click', function() {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    mainContent.classList.toggle('expanded');
+                    
+                    // 切换图标方向
+                    const icon = toggleSidebar.querySelector('i');
+                    if(sidebar.classList.contains('sidebar-collapsed')) {
+                        icon.classList.remove('bi-chevron-double-left');
+                        icon.classList.add('bi-chevron-double-right');
+                    } else {
+                        icon.classList.remove('bi-chevron-double-right');
+                        icon.classList.add('bi-chevron-double-left');
+                    }
+                });
+            }
+            
+            // 移动端关闭侧边栏
+            const closeSidebar = document.getElementById('closeSidebar');
+            if(closeSidebar) {
+                closeSidebar.addEventListener('click', function() {
+                    sidebar.classList.remove('show');
+                });
+            }
+            
+            // 移动端侧边栏切换
+            const sidebarToggler = document.getElementById('sidebarToggler');
+            if(sidebarToggler) {
+                sidebarToggler.addEventListener('click', function() {
+                    sidebar.classList.add('show');
+                });
+            }
+            
+            // 响应式适配
+            function checkWindowSize() {
+                if (window.innerWidth < 992) {
+                    sidebar.classList.remove('sidebar-collapsed');
+                    mainContent.classList.remove('expanded');
+                    if(toggleSidebar) {
+                        const icon = toggleSidebar.querySelector('i');
+                        icon.classList.remove('bi-chevron-double-right');
+                        icon.classList.add('bi-chevron-double-left');
+                    }
+                }
+            }
+            
+            window.addEventListener('resize', checkWindowSize);
+            checkWindowSize();
+        });
+    </script>
+</body>
+</html> 

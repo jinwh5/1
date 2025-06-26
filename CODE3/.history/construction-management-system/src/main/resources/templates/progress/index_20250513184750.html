@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>进度追踪 - 公路施工人员管理系统</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>进度追踪</h2>
+            <a href="/progress/create" class="btn btn-primary">
+                <i class="fas fa-plus mr-2"></i>新增进度
+            </a>
+        </div>
+
+        <!-- 进度概览卡片 -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">总进度数</h5>
+                        <h2 class="card-text" th:text="${progressList.size()}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">延期进度</h5>
+                        <h2 class="card-text" th:text="${delayedProgress.size()}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-danger text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">落后进度</h5>
+                        <h2 class="card-text" th:text="${behindScheduleProgress.size()}">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 进度列表 -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>项目</th>
+                                <th>路段</th>
+                                <th>计划进度</th>
+                                <th>实际进度</th>
+                                <th>开始日期</th>
+                                <th>计划完成日期</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="progress : ${progressList}">
+                                <td th:text="${progress.id}">1</td>
+                                <td th:text="${progress.projectId}">项目1</td>
+                                <td th:text="${progress.section}">路段A</td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" 
+                                             th:style="'width: ' + ${progress.plannedProgress} + '%'"
+                                             th:text="${progress.plannedProgress} + '%'">50%</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" 
+                                             th:style="'width: ' + ${progress.actualProgress} + '%'"
+                                             th:text="${progress.actualProgress} + '%'">30%</div>
+                                    </div>
+                                </td>
+                                <td th:text="${#temporals.format(progress.startDate, 'yyyy-MM-dd')}">2024-01-01</td>
+                                <td th:text="${#temporals.format(progress.plannedEndDate, 'yyyy-MM-dd')}">2024-12-31</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${progress.status == '已完成' ? 'badge-success' : (progress.status == '已延期' ? 'badge-danger' : 'badge-warning')}"
+                                          th:text="${progress.status}">进行中</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/progress/edit/{id}(id=${progress.id})}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/progress/delete/{id}(id=${progress.id})}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('确定要删除这条进度记录吗？')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页 -->
+                <nav th:if="${totalPages > 1}">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/progress(page=${currentPage - 1})}">上一页</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${currentPage == i ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/progress(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/progress(page=${currentPage + 1})}">下一页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 

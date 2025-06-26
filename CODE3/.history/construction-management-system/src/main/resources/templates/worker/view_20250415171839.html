@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>工人详情</title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-user text-primary mr-2"></i>工人详情
+            </h2>
+            <div>
+                <a th:href="@{/workers/edit/{id}(id=${worker.id})}" class="btn btn-primary">
+                    <i class="fas fa-edit mr-1"></i>编辑
+                </a>
+                <a th:href="@{/workers}" class="btn btn-secondary ml-2">
+                    <i class="fas fa-arrow-left mr-1"></i>返回列表
+                </a>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- 基本信息卡片 -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-id-card mr-2"></i>基本信息
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">ID:</div>
+                            <div class="col-md-8" th:text="${worker.id}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">姓名:</div>
+                            <div class="col-md-8" th:text="${worker.name}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">性别:</div>
+                            <div class="col-md-8" th:text="${worker.gender}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">年龄:</div>
+                            <div class="col-md-8" th:text="${worker.age}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">身份证号:</div>
+                            <div class="col-md-8" th:text="${worker.idCard}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">电话:</div>
+                            <div class="col-md-8" th:text="${worker.phone}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">地址:</div>
+                            <div class="col-md-8" th:text="${worker.address}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 工作信息卡片 -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-briefcase mr-2"></i>工作信息
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">职位:</div>
+                            <div class="col-md-8" th:text="${worker.position}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">入职日期:</div>
+                            <div class="col-md-8" th:text="${#temporals.format(worker.hireDate, 'yyyy-MM-dd')}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">状态:</div>
+                            <div class="col-md-8">
+                                <span th:class="${'badge ' + (worker.status == '在职' ? 'badge-success' : 
+                                    (worker.status == '离职' ? 'badge-danger' : 'badge-warning'))}"
+                                      th:text="${worker.status}"></span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">工龄:</div>
+                            <div class="col-md-8" th:text="${T(java.time.Period).between(worker.hireDate, T(java.time.LocalDate).now()).getYears() + '年 ' + 
+                                T(java.time.Period).between(worker.hireDate, T(java.time.LocalDate).now()).getMonths() + '个月'}"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 font-weight-bold">备注:</div>
+                            <div class="col-md-8" th:text="${worker.remarks}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 相关信息选项卡 -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="workerTabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab">
+                                    <i class="fas fa-calendar-check mr-1"></i>考勤记录
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="schedule-tab" data-toggle="tab" href="#schedule" role="tab">
+                                    <i class="fas fa-calendar-alt mr-1"></i>排班信息
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="workerTabContent">
+                            <!-- 考勤记录选项卡 -->
+                            <div class="tab-pane fade show active" id="attendance" role="tabpanel">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle mr-1"></i>此处将显示该工人的考勤记录
+                                </div>
+                                <p class="text-center">
+                                    <a href="#" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye mr-1"></i>查看所有考勤记录
+                                    </a>
+                                </p>
+                            </div>
+                            
+                            <!-- 排班信息选项卡 -->
+                            <div class="tab-pane fade" id="schedule" role="tabpanel">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle mr-1"></i>此处将显示该工人的排班信息
+                                </div>
+                                <p class="text-center">
+                                    <a href="#" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye mr-1"></i>查看所有排班信息
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html> 

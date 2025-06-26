@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>进度表单 - 公路施工人员管理系统</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 th:text="${progress.id == null ? '新增进度' : '编辑进度'}">进度表单</h2>
+            <a href="/progress" class="btn btn-secondary">
+                <i class="fas fa-arrow-left mr-2"></i>返回列表
+            </a>
+        </div>
+
+        <!-- 进度表单 -->
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/progress/save}" th:object="${progress}" method="post">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="form-group">
+                        <label for="projectId">项目</label>
+                        <select class="form-control" id="projectId" th:field="*{projectId}" required>
+                            <option value="">请选择项目</option>
+                            <option th:each="project : ${projects}"
+                                    th:value="${project.id}"
+                                    th:text="${project.name}">项目1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="section">路段名称</label>
+                        <input type="text" class="form-control" id="section" th:field="*{section}" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="plannedProgress">计划进度(%)</label>
+                            <input type="number" class="form-control" id="plannedProgress" 
+                                   th:field="*{plannedProgress}" min="0" max="100" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="actualProgress">实际进度(%)</label>
+                            <input type="number" class="form-control" id="actualProgress" 
+                                   th:field="*{actualProgress}" min="0" max="100" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="startDate">开始日期</label>
+                            <input type="date" class="form-control" id="startDate" 
+                                   th:field="*{startDate}" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="plannedEndDate">计划完成日期</label>
+                            <input type="date" class="form-control" id="plannedEndDate" 
+                                   th:field="*{plannedEndDate}" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="actualEndDate">实际完成日期</label>
+                            <input type="date" class="form-control" id="actualEndDate" 
+                                   th:field="*{actualEndDate}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">状态</label>
+                        <select class="form-control" id="status" th:field="*{status}" required>
+                            <option value="进行中">进行中</option>
+                            <option value="已完成">已完成</option>
+                            <option value="已延期">已延期</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">进度描述</label>
+                        <textarea class="form-control" id="description" th:field="*{description}" 
+                                  rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="obstacles">遇到的障碍</label>
+                        <textarea class="form-control" id="obstacles" th:field="*{obstacles}" 
+                                  rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="solutions">解决方案</label>
+                        <textarea class="form-control" id="solutions" th:field="*{solutions}" 
+                                  rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="remarks">备注</label>
+                        <textarea class="form-control" id="remarks" th:field="*{remarks}" 
+                                  rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save mr-2"></i>保存
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 

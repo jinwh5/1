@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title th:text="${attendance.id == null ? '添加考勤记录' : '编辑考勤记录'}"></title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-calendar-plus text-primary mr-2"></i>
+                <span th:text="${attendance.id == null ? '添加考勤记录' : '编辑考勤记录'}"></span>
+            </h2>
+            <a th:href="@{/attendance}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left mr-1"></i>返回列表
+            </a>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/attendance/save}" method="post" th:object="${attendance}" id="attendanceForm">
+                    <!-- 隐藏ID字段 -->
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="row">
+                        <!-- 基本信息 -->
+                        <div class="col-md-6">
+                            <h5 class="mb-3 border-bottom pb-2">基本信息</h5>
+                            
+                            <div class="form-group">
+                                <label for="workerId">工人</label>
+                                <select class="form-control" id="workerId" th:field="*{workerId}" required>
+                                    <option value="">-- 请选择工人 --</option>
+                                    <option th:each="worker : ${workers}" 
+                                            th:value="${worker.id}" 
+                                            th:text="${worker.name + ' (' + worker.position + ')'}"></option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="date">日期</label>
+                                <input type="date" class="form-control" id="date" name="date" th:value="${attendance.date != null ? #temporals.format(attendance.date, 'yyyy-MM-dd') : ''}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="status">状态</label>
+                                <select class="form-control" id="status" th:field="*{status}" required>
+                                    <option value="正常">正常</option>
+                                    <option value="迟到">迟到</option>
+                                    <option value="早退">早退</option>
+                                    <option value="缺勤">缺勤</option>
+                                    <option value="请假">请假</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- 时间信息 -->
+                        <div class="col-md-6">
+                            <h5 class="mb-3 border-bottom pb-2">时间信息</h5>
+                            
+                            <div class="form-group">
+                                <label for="checkInTime">签到时间</label>
+                                <input type="datetime-local" class="form-control" id="checkInTime" name="checkInTime" step="60"
+                                       th:value="${attendance.checkInTime != null ? #temporals.format(attendance.checkInTime, 'yyyy-MM-dd''T''HH:mm:ss').substring(0, 16) : ''}">
+                                <small class="form-text text-muted">如果是请假或缺勤，可不填写</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="checkOutTime">签退时间</label>
+                                <input type="datetime-local" class="form-control" id="checkOutTime" name="checkOutTime" step="60"
+                                       th:value="${attendance.checkOutTime != null ? #temporals.format(attendance.checkOutTime, 'yyyy-MM-dd''T''HH:mm:ss').substring(0, 16) : ''}">
+                                <small class="form-text text-muted">如果是请假或缺勤，可不填写</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="workHours">工作时长（小时）</label>
+                                <input type="number" class="form-control" id="workHours" th:field="*{workHours}" step="0.1" min="0">
+                                <small class="form-text text-muted">如果有签到和签退时间，可自动计算</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="overtimeHours">加班时长（小时）</label>
+                                <input type="number" class="form-control" id="overtimeHours" th:field="*{overtimeHours}" step="0.1" min="0">
+                            </div>
+                        </div>
+                        
+                        <!-- 备注信息 -->
+                        <div class="col-md-12 mt-3">
+                            <div class="form-group">
+                                <label for="remarks">备注</label>
+                                <textarea class="form-control" id="remarks" th:field="*{remarks}" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group text-center mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mr-1"></i>保存
+                        </button>
+                        <a th:href="@{/attendance}" class="btn btn-secondary ml-2">
+                            <i class="fas fa-times mr-1"></i>取消
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页面特定的JavaScript -->
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 状态切换时处理表单项可用性
+                $('#status').change(function() {
+                    let status = $(this).val();
+                    if (status === '缺勤' || status === '请假') {
+                        $('#checkInTime, #checkOutTime').val('').prop('required', false).prop('disabled', true);
+                        $('#workHours, #overtimeHours').val('0').prop('disabled', false);
+                    } else {
+                        $('#checkInTime, #checkOutTime').prop('disabled', false);
+                        $('#workHours, #overtimeHours').prop('disabled', false);
+                    }
+                });
+                
+                // 初始状态处理
+                $('#status').trigger('change');
+                
+                // 签到/签退时间变更时自动计算工时
+                $('#checkInTime, #checkOutTime').change(function() {
+                    let checkInTime = $('#checkInTime').val();
+                    let checkOutTime = $('#checkOutTime').val();
+                    
+                    // 如果两个时间都有值，计算工时
+                    if (checkInTime && checkOutTime) {
+                        let checkIn = new Date(checkInTime);
+                        let checkOut = new Date(checkOutTime);
+                        
+                        // 计算时间差（毫秒）
+                        let diff = checkOut - checkIn;
+                        
+                        // 如果有效的时间差，转换为小时
+                        if (diff > 0) {
+                            // 转换为小时（保留一位小数）
+                            let hours = Math.round(diff / 36000) / 100;
+                            $('#workHours').val(hours);
+                            
+                            // 如果超过8小时，计算加班时间
+                            if (hours > 8) {
+                                $('#overtimeHours').val(Math.round((hours - 8) * 10) / 10);
+                            } else {
+                                $('#overtimeHours').val(0);
+                            }
+                        }
+                    }
+                });
+                
+                // 表单提交前的验证
+                $('#attendanceForm').submit(function(e) {
+                    let status = $('#status').val();
+                    let checkInTime = $('#checkInTime').val();
+                    let checkOutTime = $('#checkOutTime').val();
+                    
+                    // 如果状态是正常、迟到或早退，需要检查是否有签到和签退时间
+                    if ((status === '正常' || status === '迟到' || status === '早退') && 
+                        (!checkInTime || !checkOutTime)) {
+                        alert('状态为正常、迟到或早退时，必须填写签到和签退时间！');
+                        e.preventDefault();
+                        return false;
+                    }
+                    
+                    // 如果有签到和签退时间，检查签退时间是否晚于签到时间
+                    if (checkInTime && checkOutTime) {
+                        let checkIn = new Date(checkInTime);
+                        let checkOut = new Date(checkOutTime);
+                        
+                        if (checkOut <= checkIn) {
+                            alert('签退时间必须晚于签到时间！');
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html> 

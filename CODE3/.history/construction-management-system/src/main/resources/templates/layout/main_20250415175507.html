@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - 公路施工人员管理系统">公路施工人员管理系统</title>
+    
+    <!-- CSS 文件 -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- 页面特定样式 -->
+    <th:block layout:fragment="styles"></th:block>
+</head>
+
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3>公路施工人员管理系统</h3>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a th:href="@{/}" th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/personnel}" th:classappend="${#httpServletRequest.requestURI.startsWith('/personnel') ? 'active' : ''}">
+                        <i class="fas fa-users"></i>
+                        <span>人员管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/attendance}" th:classappend="${#httpServletRequest.requestURI.startsWith('/attendance') ? 'active' : ''}">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>考勤管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/salary}" th:classappend="${#httpServletRequest.requestURI.startsWith('/salary') ? 'active' : ''}">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>工资管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/project}" th:classappend="${#httpServletRequest.requestURI.startsWith('/project') ? 'active' : ''}">
+                        <i class="fas fa-road"></i>
+                        <span>项目管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/safety}" th:classappend="${#httpServletRequest.requestURI.startsWith('/safety') ? 'active' : ''}">
+                        <i class="fas fa-hard-hat"></i>
+                        <span>安全记录</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/reports}" th:classappend="${#httpServletRequest.requestURI.startsWith('/reports') ? 'active' : ''}">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>统计报表</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/system}" th:classappend="${#httpServletRequest.requestURI.startsWith('/system') ? 'active' : ''}">
+                        <i class="fas fa-cog"></i>
+                        <span>系统设置</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出登录</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- 主要内容区域 -->
+    <div class="main-content">
+        <!-- 顶部用户信息栏 -->
+        <div class="top-bar">
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span class="username" th:text="${#authentication != null ? #authentication.name : '管理员'}">管理员</span>
+            </div>
+        </div>
+        
+        <!-- 警告信息 -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+        
+        <!-- 页面内容区域 -->
+        <div class="content-container">
+            <th:block layout:fragment="content"></th:block>
+        </div>
+    </div>
+    
+    <!-- JavaScript 文件 -->
+    <script th:src="@{/js/main.js}"></script>
+    
+    <!-- 页面特定脚本 -->
+    <th:block layout:fragment="scripts"></th:block>
+</body>
+</html> 

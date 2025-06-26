@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>项目进度 - 公路施工人员管理系统</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 th:text="${project.name + ' - 进度详情'}">项目进度</h2>
+            <a href="/progress" class="btn btn-secondary">
+                <i class="fas fa-arrow-left mr-2"></i>返回列表
+            </a>
+        </div>
+
+        <!-- 项目信息卡片 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">项目信息</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>项目名称：</strong> <span th:text="${project.name}">项目1</span></p>
+                        <p><strong>项目描述：</strong> <span th:text="${project.description}">描述</span></p>
+                        <p><strong>项目地点：</strong> <span th:text="${project.location}">地点</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>开始日期：</strong> <span th:text="${#temporals.format(project.startDate, 'yyyy-MM-dd')}">2024-01-01</span></p>
+                        <p><strong>计划完成日期：</strong> <span th:text="${#temporals.format(project.endDate, 'yyyy-MM-dd')}">2024-12-31</span></p>
+                        <p><strong>项目状态：</strong> <span th:text="${project.status}">进行中</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 进度列表 -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>路段</th>
+                                <th>计划进度</th>
+                                <th>实际进度</th>
+                                <th>开始日期</th>
+                                <th>计划完成日期</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="progress : ${progressList}">
+                                <td th:text="${progress.section}">路段A</td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" 
+                                             th:style="'width: ' + ${progress.plannedProgress} + '%'"
+                                             th:text="${progress.plannedProgress} + '%'">50%</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" 
+                                             th:style="'width: ' + ${progress.actualProgress} + '%'"
+                                             th:text="${progress.actualProgress} + '%'">30%</div>
+                                    </div>
+                                </td>
+                                <td th:text="${#temporals.format(progress.startDate, 'yyyy-MM-dd')}">2024-01-01</td>
+                                <td th:text="${#temporals.format(progress.plannedEndDate, 'yyyy-MM-dd')}">2024-12-31</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${progress.status == '已完成' ? 'badge-success' : (progress.status == '已延期' ? 'badge-danger' : 'badge-warning')}"
+                                          th:text="${progress.status}">进行中</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/progress/edit/{id}(id=${progress.id})}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 

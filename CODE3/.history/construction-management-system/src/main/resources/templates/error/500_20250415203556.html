@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - 服务器错误</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .error-template {
+            padding: 40px 15px;
+            text-align: center;
+        }
+        .error-actions {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .error-actions .btn {
+            margin-right: 10px;
+        }
+        .error-details {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .error-technical {
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: left;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="error-template">
+                    <h1>
+                        <i class="fas fa-exclamation-circle text-danger"></i> 500 错误
+                    </h1>
+                    <h2>服务器内部错误</h2>
+                    <div class="error-details">
+                        <p th:text="${errorMessage ?: '服务器处理请求时发生错误'}"></p>
+                        <p>请求路径: <span th:text="${requestUri ?: '未知'}"></span></p>
+                        <p>模块: <span th:text="${moduleName ?: '未知'}"></span></p>
+                    </div>
+                    <div class="error-actions">
+                        <a href="/" class="btn btn-primary">
+                            <i class="fas fa-home"></i> 返回首页
+                        </a>
+                        <a href="javascript:window.history.back();" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> 返回上一页
+                        </a>
+                        <button class="btn btn-info" onclick="document.getElementById('errorDetails').style.display = document.getElementById('errorDetails').style.display === 'none' ? 'block' : 'none';">
+                            <i class="fas fa-bug"></i> 查看错误详情
+                        </button>
+                    </div>
+                    
+                    <!-- 技术错误详情 -->
+                    <div id="errorDetails" class="error-technical" style="display: none;">
+                        <h4>错误详情:</h4>
+                        <div th:text="${errorDetails ?: '没有可用的错误详情'}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+ 

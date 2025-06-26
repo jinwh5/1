@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>考勤管理</title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-calendar-check text-primary mr-2"></i>考勤记录
+            </h2>
+            <a th:href="@{/attendance/add}" class="btn btn-primary">
+                <i class="fas fa-plus-circle mr-1"></i>添加考勤记录
+            </a>
+        </div>
+        
+        <!-- 搜索和筛选 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/attendance}" method="get" class="row">
+                    <div class="col-md-3 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">工人</span>
+                            </div>
+                            <select class="form-control" name="workerId">
+                                <option value="">全部</option>
+                                <option th:each="worker : ${workers}" 
+                                        th:value="${worker.id}" 
+                                        th:text="${worker.name}"
+                                        th:selected="${workerId != null && workerId == worker.id}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">开始日期</span>
+                            </div>
+                            <input type="date" class="form-control" name="startDate" th:value="${startDate}">
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">结束日期</span>
+                            </div>
+                            <input type="date" class="form-control" name="endDate" th:value="${endDate}">
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">状态</span>
+                            </div>
+                            <select class="form-control" name="status">
+                                <option value="">全部</option>
+                                <option value="正常" th:selected="${status == '正常'}">正常</option>
+                                <option value="迟到" th:selected="${status == '迟到'}">迟到</option>
+                                <option value="早退" th:selected="${status == '早退'}">早退</option>
+                                <option value="缺勤" th:selected="${status == '缺勤'}">缺勤</option>
+                                <option value="请假" th:selected="${status == '请假'}">请假</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12 text-center mt-2">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <i class="fas fa-search mr-1"></i>搜索
+                        </button>
+                        <a th:href="@{/attendance}" class="btn btn-secondary">
+                            <i class="fas fa-redo mr-1"></i>重置
+                        </a>
+                        <a th:href="@{/attendance/statistics}" class="btn btn-info ml-2">
+                            <i class="fas fa-chart-bar mr-1"></i>考勤统计
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 考勤记录列表 -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>工人</th>
+                                <th>日期</th>
+                                <th>签到时间</th>
+                                <th>签退时间</th>
+                                <th>工时</th>
+                                <th>状态</th>
+                                <th width="150px">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${attendanceRecords.empty}">
+                                <td colspan="8" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-info-circle mr-1"></i>暂无考勤记录
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:each="attendance : ${attendanceRecords}">
+                                <td th:text="${attendance.id}"></td>
+                                <td>
+                                    <a th:href="@{/workers/view/{id}(id=${attendance.workerId})}" 
+                                       th:with="workerName=${T(java.util.Objects).toString(#arrays.isEmpty(workers.?[id == attendance.workerId]) ? '' : workers.?[id == attendance.workerId][0].name)}"
+                                       th:text="${workerName != '' ? workerName : '未知工人'}"
+                                       class="text-primary"></a>
+                                </td>
+                                <td th:text="${#temporals.format(attendance.date, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${attendance.checkInTime != null ? #temporals.format(attendance.checkInTime, 'HH:mm') : '-'}"></td>
+                                <td th:text="${attendance.checkOutTime != null ? #temporals.format(attendance.checkOutTime, 'HH:mm') : '-'}"></td>
+                                <td th:text="${attendance.workHours != null ? attendance.workHours + '小时' : '-'}"></td>
+                                <td>
+                                    <span th:class="${'badge ' + 
+                                        (attendance.status == '正常' ? 'badge-success' : 
+                                        (attendance.status == '迟到' ? 'badge-warning' : 
+                                        (attendance.status == '早退' ? 'badge-info' : 
+                                        (attendance.status == '缺勤' ? 'badge-danger' : 'badge-secondary'))))}">
+                                        <i th:class="${
+                                            (attendance.status == '正常' ? 'fas fa-check mr-1' : 
+                                            (attendance.status == '迟到' ? 'fas fa-clock mr-1' : 
+                                            (attendance.status == '早退' ? 'fas fa-sign-out-alt mr-1' : 
+                                            (attendance.status == '缺勤' ? 'fas fa-times mr-1' : 'fas fa-calendar-minus mr-1'))))}"></i>
+                                        <span th:text="${attendance.status}"></span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/attendance/view/{id}(id=${attendance.id})}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a th:href="@{/attendance/edit/{id}(id=${attendance.id})}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/attendance/delete/{id}(id=${attendance.id})}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('确定要删除该考勤记录吗？')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 分页 -->
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center" th:if="${totalPages > 0}">
+                <div>
+                    显示 <span th:text="${currentPage * 10 + 1}"></span> 至 
+                    <span th:text="${(currentPage * 10) + attendanceRecords.size()}"></span> 条，
+                    共 <span th:text="${totalItems}"></span> 条记录
+                </div>
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/attendance(page=0, size=10, workerId=${workerId}, startDate=${startDate}, endDate=${endDate}, status=${status})}">首页</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/attendance(page=${currentPage - 1}, size=10, workerId=${workerId}, startDate=${startDate}, endDate=${endDate}, status=${status})}">上一页</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                            th:classappend="${i == currentPage ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/attendance(page=${i}, size=10, workerId=${workerId}, startDate=${startDate}, endDate=${endDate}, status=${status})}" th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/attendance(page=${currentPage + 1}, size=10, workerId=${workerId}, startDate=${startDate}, endDate=${endDate}, status=${status})}">下一页</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/attendance(page=${totalPages - 1}, size=10, workerId=${workerId}, startDate=${startDate}, endDate=${endDate}, status=${status})}">末页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+</body>
+</html> 

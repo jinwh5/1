@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>工人详情</title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-user text-primary mr-2"></i>工人详情
+            </h2>
+            <div>
+                <a th:href="@{/workers/edit/{id}(id=${worker.id})}" class="btn btn-primary">
+                    <i class="fas fa-edit mr-1"></i>编辑
+                </a>
+                <a th:href="@{/workers}" class="btn btn-secondary ml-2">
+                    <i class="fas fa-arrow-left mr-1"></i>返回列表
+                </a>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- 基本信息卡片 -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-id-card mr-2"></i>基本信息
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">ID:</div>
+                            <div class="col-md-8" th:text="${worker.id}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">姓名:</div>
+                            <div class="col-md-8" th:text="${worker.name}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">性别:</div>
+                            <div class="col-md-8" th:text="${worker.gender}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">年龄:</div>
+                            <div class="col-md-8" th:text="${worker.age}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">身份证号:</div>
+                            <div class="col-md-8" th:text="${worker.idCard}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">电话:</div>
+                            <div class="col-md-8" th:text="${worker.phone}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">地址:</div>
+                            <div class="col-md-8" th:text="${worker.address}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 工作信息卡片 -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-briefcase mr-2"></i>工作信息
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">职位:</div>
+                            <div class="col-md-8" th:text="${worker.position}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">入职日期:</div>
+                            <div class="col-md-8" th:text="${#temporals.format(worker.hireDate, 'yyyy-MM-dd')}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">状态:</div>
+                            <div class="col-md-8">
+                                <span th:class="${'badge ' + (worker.status == '在职' ? 'badge-success' : 
+                                    (worker.status == '离职' ? 'badge-danger' : 'badge-warning'))}"
+                                      th:text="${worker.status}"></span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">工龄:</div>
+                            <div class="col-md-8" th:text="${T(java.time.Period).between(worker.hireDate, T(java.time.LocalDate).now()).getYears() + '年 ' + 
+                                T(java.time.Period).between(worker.hireDate, T(java.time.LocalDate).now()).getMonths() + '个月'}"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 font-weight-bold">备注:</div>
+                            <div class="col-md-8" th:text="${worker.remarks}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 相关信息选项卡 -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="workerTabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab">
+                                    <i class="fas fa-calendar-check mr-1"></i>考勤记录
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="schedule-tab" data-toggle="tab" href="#schedule" role="tab">
+                                    <i class="fas fa-calendar-alt mr-1"></i>排班信息
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="workerTabContent">
+                            <!-- 考勤记录选项卡 -->
+                            <div class="tab-pane fade show active" id="attendance" role="tabpanel">
+                                <div class="row text-center mb-4">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card border-success">
+                                            <div class="card-body p-2">
+                                                <h5 class="card-title text-success">正常出勤</h5>
+                                                <p class="card-text display-4" id="normalCount">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card border-warning">
+                                            <div class="card-body p-2">
+                                                <h5 class="card-title text-warning">迟到</h5>
+                                                <p class="card-text display-4" id="lateCount">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card border-info">
+                                            <div class="card-body p-2">
+                                                <h5 class="card-title text-info">早退</h5>
+                                                <p class="card-text display-4" id="earlyLeaveCount">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card border-danger">
+                                            <div class="card-body p-2">
+                                                <h5 class="card-title text-danger">缺勤</h5>
+                                                <p class="card-text display-4" id="absentCount">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="recentAttendanceTable">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th>日期</th>
+                                                <th>签到时间</th>
+                                                <th>签退时间</th>
+                                                <th>工时</th>
+                                                <th>状态</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="5" class="text-center">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only">加载中...</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="text-center mt-3">
+                                    <a th:href="@{/attendance/worker/{id}(id=${worker.id})}" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye mr-1"></i>查看所有考勤记录
+                                    </a>
+                                    <a th:href="@{/attendance/add?workerId={id}(id=${worker.id})}" class="btn btn-outline-success ml-2">
+                                        <i class="fas fa-plus-circle mr-1"></i>添加考勤记录
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- 排班信息选项卡 -->
+                            <div class="tab-pane fade" id="schedule" role="tabpanel">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle mr-1"></i>此处将显示该工人的排班信息
+                                </div>
+                                <p class="text-center">
+                                    <a href="#" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye mr-1"></i>查看所有排班信息
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页面特定的JavaScript -->
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 加载考勤统计数据
+                loadAttendanceStats();
+                // 加载最近考勤记录
+                loadRecentAttendance();
+                
+                function loadAttendanceStats() {
+                    const workerId = [[${worker.id}]];
+                    const today = new Date();
+                    
+                    // 构建当月开始和结束日期
+                    const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    
+                    // AJAX请求获取统计数据
+                    $.ajax({
+                        url: '/api/attendance/stats',
+                        type: 'GET',
+                        data: {
+                            workerId: workerId,
+                            startDate: formatDate(startDate),
+                            endDate: formatDate(endDate)
+                        },
+                        success: function(response) {
+                            if (response) {
+                                $('#normalCount').text(response.normal || 0);
+                                $('#lateCount').text(response.late || 0);
+                                $('#earlyLeaveCount').text(response.earlyLeave || 0);
+                                $('#absentCount').text(response.absent || 0);
+                            }
+                        },
+                        error: function() {
+                            // 错误处理，显示默认值
+                            $('#normalCount, #lateCount, #earlyLeaveCount, #absentCount').text('0');
+                        }
+                    });
+                }
+                
+                function loadRecentAttendance() {
+                    const workerId = [[${worker.id}]];
+                    
+                    // AJAX请求获取最近考勤记录
+                    $.ajax({
+                        url: '/api/attendance',
+                        type: 'GET',
+                        data: {
+                            workerId: workerId,
+                            page: 0,
+                            size: 5
+                        },
+                        success: function(response) {
+                            let tbody = $('#recentAttendanceTable tbody');
+                            tbody.empty();
+                            
+                            if (response && response.content && response.content.length > 0) {
+                                response.content.forEach(function(attendance) {
+                                    let statusClass = getStatusClass(attendance.status);
+                                    let statusIcon = getStatusIcon(attendance.status);
+                                    
+                                    let row = `
+                                        <tr>
+                                            <td>${formatDateOnly(attendance.date)}</td>
+                                            <td>${attendance.checkInTime ? formatTime(attendance.checkInTime) : '-'}</td>
+                                            <td>${attendance.checkOutTime ? formatTime(attendance.checkOutTime) : '-'}</td>
+                                            <td>${attendance.workHours ? attendance.workHours + '小时' : '-'}</td>
+                                            <td>
+                                                <span class="badge ${statusClass}">
+                                                    <i class="${statusIcon} mr-1"></i>${attendance.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    `;
+                                    tbody.append(row);
+                                });
+                            } else {
+                                tbody.html(`
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4">
+                                            <div class="text-muted">
+                                                <i class="fas fa-info-circle mr-1"></i>暂无考勤记录
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `);
+                            }
+                        },
+                        error: function() {
+                            let tbody = $('#recentAttendanceTable tbody');
+                            tbody.html(`
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">
+                                        <div class="text-danger">
+                                            <i class="fas fa-exclamation-circle mr-1"></i>加载数据失败
+                                        </div>
+                                    </td>
+                                </tr>
+                            `);
+                        }
+                    });
+                }
+                
+                // 获取状态对应的样式类
+                function getStatusClass(status) {
+                    switch(status) {
+                        case '正常': return 'badge-success';
+                        case '迟到': return 'badge-warning';
+                        case '早退': return 'badge-info';
+                        case '缺勤': return 'badge-danger';
+                        default: return 'badge-secondary';
+                    }
+                }
+                
+                // 获取状态对应的图标
+                function getStatusIcon(status) {
+                    switch(status) {
+                        case '正常': return 'fas fa-check';
+                        case '迟到': return 'fas fa-clock';
+                        case '早退': return 'fas fa-sign-out-alt';
+                        case '缺勤': return 'fas fa-times';
+                        default: return 'fas fa-calendar-minus';
+                    }
+                }
+                
+                // 日期格式化函数
+                function formatDate(date) {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                }
+                
+                // 仅格式化日期部分（不包含时间）
+                function formatDateOnly(dateStr) {
+                    const date = new Date(dateStr);
+                    return formatDate(date);
+                }
+                
+                // 格式化时间
+                function formatTime(timeStr) {
+                    const date = new Date(timeStr);
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    return `${hours}:${minutes}`;
+                }
+            });
+        </script>
+    </th:block>
+</body>
+</html> 

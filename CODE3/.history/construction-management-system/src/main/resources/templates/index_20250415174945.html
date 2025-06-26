@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>公路施工人员管理系统</title>
+    <link rel="stylesheet" th:href="@{/css/pure-min.css}">
+</head>
+<body>
+    <h1>公路施工人员管理系统</h1>
+    
+    <p>欢迎使用公路施工人员管理系统，请选择以下模块进行操作</p>
+    
+    <h3><a th:href="@{/workers}">工人管理</a></h3>
+    <p>管理建设项目中的所有工人信息</p>
+    
+    <h3><a th:href="@{/attendances}">考勤管理</a></h3>
+    <p>记录和管理工人的考勤信息</p>
+    
+    <h3><a th:href="@{/projects}">项目管理</a></h3>
+    <p>管理各类建设项目的信息</p>
+    
+    <h3><a th:href="@{/schedules}">排班管理</a></h3>
+    <p>安排和管理工人的工作排班</p>
+    
+    <h3><a th:href="@{/safety-records}">安全记录</a></h3>
+    <p>记录和管理地面安全事件</p>
+</body>
+</html> 

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- 页面底部 -->
+    <footer th:fragment="footer" class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">&copy; 2023-2024 公路施工人员管理系统 版权所有</p>
+                    <p class="mb-0 text-muted small">联系我们：support@highway-management.com</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item"><a href="/about" class="text-muted small">关于我们</a></li>
+                        <li class="list-inline-item"><a href="/privacy" class="text-muted small">隐私政策</a></li>
+                        <li class="list-inline-item"><a href="/terms" class="text-muted small">使用条款</a></li>
+                        <li class="list-inline-item"><a href="/help" class="text-muted small">帮助中心</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 页面脚本 -->
+    <div th:fragment="scripts">
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+        <!-- Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <!-- DataTables JS -->
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+        
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+        
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <!-- 自定义JS -->
+        <script th:src="@{/js/main.js}"></script>
+        
+        <!-- 侧边栏JS -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // 侧边栏切换
+                const sidebarToggle = document.getElementById('sidebarToggle');
+                if (sidebarToggle) {
+                    sidebarToggle.addEventListener('click', function() {
+                        document.body.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebarState', 
+                            document.body.classList.contains('sidebar-collapsed') ? 'collapsed' : 'expanded');
+                    });
+                }
+                
+                // 加载侧边栏状态
+                const sidebarState = localStorage.getItem('sidebarState');
+                if (sidebarState === 'collapsed') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+                
+                // 初始化工具提示
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+                
+                // 初始化弹出框
+                var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+                popoverTriggerList.map(function (popoverTriggerEl) {
+                    return new bootstrap.Popover(popoverTriggerEl);
+                });
+                
+                // 初始化数据表格
+                if ($.fn.DataTable) {
+                    $('.datatable').DataTable({
+                        language: {
+                            url: '/js/dataTables.zh-CN.json'
+                        },
+                        responsive: true
+                    });
+                }
+                
+                // 确认删除提示
+                document.querySelectorAll('.delete-confirm').forEach(function(element) {
+                    element.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const url = this.getAttribute('href');
+                        const name = this.getAttribute('data-name') || '此记录';
+                        
+                        Swal.fire({
+                            title: '确定要删除吗？',
+                            text: `您即将删除 ${name}，此操作不可撤销！`,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#dc3545',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: '是，删除它！',
+                            cancelButtonText: '取消'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = url;
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+    </div>
+</body>
+</html> 

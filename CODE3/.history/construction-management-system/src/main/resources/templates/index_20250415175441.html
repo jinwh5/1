@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+
+<head>
+    <title>首页 - 公路施工人员管理系统</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="header-title">
+            <i class="fas fa-home"></i>
+            <span class="title-text">系统概览</span>
+        </div>
+        
+        <!-- 欢迎信息 -->
+        <div class="welcome-card table-container">
+            <h2>欢迎使用公路施工人员管理系统</h2>
+            <p>本系统提供施工人员信息管理、考勤记录、工资核算等功能，帮助您高效管理公路施工团队。</p>
+        </div>
+        
+        <!-- 系统概况统计 -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card table-container">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>施工人员总数</h3>
+                        <p class="stat-number" th:text="${personnelCount ?: 0}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card table-container">
+                    <div class="stat-icon">
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>在岗人员</h3>
+                        <p class="stat-number" th:text="${activePersonnelCount ?: 0}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card table-container">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>考勤记录数</h3>
+                        <p class="stat-number" th:text="${attendanceCount ?: 0}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card table-container">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>工资发放总额</h3>
+                        <p class="stat-number" th:text="${salaryTotal ?: '0元'}">0元</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 快速导航 -->
+        <div class="header-title mt-4">
+            <i class="fas fa-compass"></i>
+            <span class="title-text">快速导航</span>
+        </div>
+        
+        <div class="quick-links">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="quick-link-card table-container">
+                        <div class="quick-link-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="quick-link-info">
+                            <h3>人员管理</h3>
+                            <p>添加、编辑和管理施工人员信息</p>
+                            <a th:href="@{/personnel}" class="btn btn-primary mt-3">进入管理</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="quick-link-card table-container">
+                        <div class="quick-link-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="quick-link-info">
+                            <h3>考勤管理</h3>
+                            <p>记录和查看施工人员考勤情况</p>
+                            <a th:href="@{/attendance}" class="btn btn-primary mt-3">进入管理</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="quick-link-card table-container">
+                        <div class="quick-link-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="quick-link-info">
+                            <h3>工资管理</h3>
+                            <p>核算和发放施工人员工资</p>
+                            <a th:href="@{/salary}" class="btn btn-primary mt-3">进入管理</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页面特定的样式 -->
+    <th:block layout:fragment="styles">
+        <style>
+            .welcome-card {
+                text-align: center;
+                padding: 30px;
+                margin-bottom: 30px;
+            }
+            
+            .welcome-card h2 {
+                margin-bottom: 15px;
+                color: #2c3e50;
+            }
+            
+            .welcome-card p {
+                color: #7f8c8d;
+                font-size: 16px;
+            }
+            
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                margin: 0 -15px;
+            }
+            
+            .col-md-3, .col-md-4 {
+                padding: 0 15px;
+                box-sizing: border-box;
+            }
+            
+            .col-md-3 {
+                width: 25%;
+            }
+            
+            .col-md-4 {
+                width: 33.333333%;
+            }
+            
+            .stat-card {
+                display: flex;
+                align-items: center;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .stat-icon {
+                font-size: 40px;
+                color: #3498db;
+                margin-right: 20px;
+            }
+            
+            .stat-info h3 {
+                font-size: 16px;
+                color: #7f8c8d;
+                margin-bottom: 5px;
+            }
+            
+            .stat-number {
+                font-size: 28px;
+                font-weight: bold;
+                color: #2c3e50;
+                margin: 0;
+            }
+            
+            .mt-3 {
+                margin-top: 15px;
+            }
+            
+            .mt-4 {
+                margin-top: 20px;
+            }
+            
+            .quick-link-card {
+                padding: 25px;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            
+            .quick-link-icon {
+                font-size: 50px;
+                color: #3498db;
+                margin-bottom: 15px;
+            }
+            
+            .quick-link-info h3 {
+                font-size: 18px;
+                color: #2c3e50;
+                margin-bottom: 10px;
+            }
+            
+            .quick-link-info p {
+                color: #7f8c8d;
+                margin-bottom: 15px;
+            }
+            
+            @media (max-width: 768px) {
+                .col-md-3, .col-md-4 {
+                    width: 100%;
+                }
+            }
+        </style>
+    </th:block>
+</body>
+</html> 

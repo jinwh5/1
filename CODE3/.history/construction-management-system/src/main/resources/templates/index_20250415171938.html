@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>首页</title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <!-- 欢迎信息 -->
+        <div class="jumbotron">
+            <h1 class="display-4">欢迎使用公路施工人员管理系统</h1>
+            <p class="lead">本系统可帮助您高效管理公路施工项目中的人员信息、考勤记录、项目进度和安全记录等内容。</p>
+            <hr class="my-4">
+            <p>点击下方按钮快速开始使用系统的主要功能。</p>
+            <a class="btn btn-primary btn-lg" th:href="@{/workers}" role="button">
+                <i class="fas fa-users mr-1"></i>查看工人列表
+            </a>
+        </div>
+
+        <!-- 功能卡片区域 -->
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-users fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">工人管理</h5>
+                        <p class="card-text">管理施工人员的基本信息、联系方式和工作状态</p>
+                        <a th:href="@{/workers}" class="btn btn-outline-primary">
+                            进入 <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-clipboard-check fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title">考勤管理</h5>
+                        <p class="card-text">记录和查询工人的签到签退情况与工时统计</p>
+                        <a th:href="@{/attendances}" class="btn btn-outline-success">
+                            进入 <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-project-diagram fa-3x text-info"></i>
+                        </div>
+                        <h5 class="card-title">项目管理</h5>
+                        <p class="card-text">跟踪公路施工项目的基本信息和状态</p>
+                        <a th:href="@{/projects}" class="btn btn-outline-info">
+                            进入 <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-hard-hat fa-3x text-danger"></i>
+                        </div>
+                        <h5 class="card-title">安全记录</h5>
+                        <p class="card-text">记录和跟踪施工过程中的安全事件</p>
+                        <a th:href="@{/safety-records}" class="btn btn-outline-danger">
+                            进入 <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 系统信息 -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle mr-1"></i>系统信息
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>系统名称：</strong>公路施工人员管理系统</p>
+                        <p><strong>版本号：</strong>v1.0.0</p>
+                        <p><strong>开发单位：</strong>XXX公司</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>运行环境：</strong>Java 8 + Spring Boot 2.7.3</p>
+                        <p><strong>在线用户：</strong>1</p>
+                        <p><strong>系统时间：</strong><span id="currentTime"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页面特定的JavaScript -->
+    <th:block layout:fragment="scripts">
+        <script>
+            // 更新当前时间
+            function updateCurrentTime() {
+                var now = new Date();
+                var timeString = now.getFullYear() + '年' + 
+                                (now.getMonth() + 1) + '月' + 
+                                now.getDate() + '日 ' + 
+                                now.getHours() + ':' + 
+                                (now.getMinutes() < 10 ? '0' : '') + now.getMinutes() + ':' + 
+                                (now.getSeconds() < 10 ? '0' : '') + now.getSeconds();
+                document.getElementById('currentTime').textContent = timeString;
+            }
+            
+            // 页面加载完成后执行
+            $(document).ready(function() {
+                updateCurrentTime();
+                setInterval(updateCurrentTime, 1000);
+            });
+        </script>
+    </th:block>
+</body>
+</html> 

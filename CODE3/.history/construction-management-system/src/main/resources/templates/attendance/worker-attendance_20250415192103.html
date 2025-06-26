@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title th:text="${worker.name} + ' - 考勤记录'"></title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-calendar-check text-primary mr-2"></i>
+                <span th:text="${worker.name}"></span>的考勤记录
+            </h2>
+            <div>
+                <button class="btn btn-success" id="exportBtn">
+                    <i class="fas fa-file-excel mr-1"></i>导出Excel
+                </button>
+                <a th:href="@{/workers/view/{id}(id=${worker.id})}" class="btn btn-secondary ml-2">
+                    <i class="fas fa-arrow-left mr-1"></i>返回工人详情
+                </a>
+            </div>
+        </div>
+        
+        <!-- 统计卡片 -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">正常出勤</h6>
+                                <p class="card-text display-4" id="normalCount">-</p>
+                            </div>
+                            <i class="fas fa-check-circle fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">迟到</h6>
+                                <p class="card-text display-4" id="lateCount">-</p>
+                            </div>
+                            <i class="fas fa-clock fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">早退</h6>
+                                <p class="card-text display-4" id="earlyLeaveCount">-</p>
+                            </div>
+                            <i class="fas fa-sign-out-alt fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-danger text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">缺勤</h6>
+                                <p class="card-text display-4" id="absentCount">-</p>
+                            </div>
+                            <i class="fas fa-times-circle fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 搜索和筛选 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/attendance/worker/{id}(id=${worker.id})}" method="get" class="row">
+                    <div class="col-md-4 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">开始日期</span>
+                            </div>
+                            <input type="date" class="form-control" name="startDate" th:value="${startDate}">
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">结束日期</span>
+                            </div>
+                            <input type="date" class="form-control" name="endDate" th:value="${endDate}">
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">状态</span>
+                            </div>
+                            <select class="form-control" name="status">
+                                <option value="">全部</option>
+                                <option value="正常" th:selected="${status == '正常'}">正常</option>
+                                <option value="迟到" th:selected="${status == '迟到'}">迟到</option>
+                                <option value="早退" th:selected="${status == '早退'}">早退</option>
+                                <option value="缺勤" th:selected="${status == '缺勤'}">缺勤</option>
+                                <option value="请假" th:selected="${status == '请假'}">请假</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12 text-center mt-2">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <i class="fas fa-search mr-1"></i>搜索
+                        </button>
+                        <a th:href="@{/attendance/worker/{id}(id=${worker.id})}" class="btn btn-secondary">
+                            <i class="fas fa-redo mr-1"></i>重置
+                        </a>
+                        <a th:href="@{/attendance/add?workerId={id}(id=${worker.id})}" class="btn btn-success ml-2">
+                            <i class="fas fa-plus-circle mr-1"></i>添加考勤记录
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 考勤记录列表 -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>日期</th>
+                                <th>签到时间</th>
+                                <th>签退时间</th>
+                                <th>工时</th>
+                                <th>加班时长</th>
+                                <th>状态</th>
+                                <th width="150px">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${attendanceRecords.empty}">
+                                <td colspan="8" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-info-circle mr-1"></i>暂无考勤记录
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:each="attendance : ${attendanceRecords}">
+                                <td th:text="${attendance.id}"></td>
+                                <td th:text="${#temporals.format(attendance.date, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${attendance.checkInTime != null ? #temporals.format(attendance.checkInTime, 'HH:mm') : '-'}"></td>
+                                <td th:text="${attendance.checkOutTime != null ? #temporals.format(attendance.checkOutTime, 'HH:mm') : '-'}"></td>
+                                <td th:text="${attendance.workHours != null ? attendance.workHours + '小时' : '-'}"></td>
+                                <td th:text="${attendance.overtimeHours != null ? attendance.overtimeHours + '小时' : '-'}"></td>
+                                <td>
+                                    <span th:class="${'badge ' + 
+                                        (attendance.status == '正常' ? 'badge-success' : 
+                                        (attendance.status == '迟到' ? 'badge-warning' : 
+                                        (attendance.status == '早退' ? 'badge-info' : 
+                                        (attendance.status == '缺勤' ? 'badge-danger' : 'badge-secondary'))))}">
+                                        <i th:class="${
+                                            (attendance.status == '正常' ? 'fas fa-check mr-1' : 
+                                            (attendance.status == '迟到' ? 'fas fa-clock mr-1' : 
+                                            (attendance.status == '早退' ? 'fas fa-sign-out-alt mr-1' : 
+                                            (attendance.status == '缺勤' ? 'fas fa-times mr-1' : 'fas fa-calendar-minus mr-1'))))}"></i>
+                                        <span th:text="${attendance.status}"></span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/attendance/view/{id}(id=${attendance.id})}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a th:href="@{/attendance/edit/{id}(id=${attendance.id})}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/attendance/delete/{id}(id=${attendance.id})}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('确定要删除该考勤记录吗？')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 分页 -->
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center" th:if="${totalPages > 0}">
+                <div>
+                    显示 <span th:text="${currentPage * 10 + 1}"></span> 至 
+                    <span th:text="${(currentPage * 10) + attendanceRecords.size()}"></span> 条，
+                    共 <span th:text="${totalItems}"></span> 条记录
+                </div>
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/attendance/worker/{id}(id=${worker.id}, page=0, size=10, startDate=${startDate}, endDate=${endDate}, status=${status})}">首页</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/attendance/worker/{id}(id=${worker.id}, page=${currentPage - 1}, size=10, startDate=${startDate}, endDate=${endDate}, status=${status})}">上一页</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                            th:classappend="${i == currentPage ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/attendance/worker/{id}(id=${worker.id}, page=${i}, size=10, startDate=${startDate}, endDate=${endDate}, status=${status})}" th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/attendance/worker/{id}(id=${worker.id}, page=${currentPage + 1}, size=10, startDate=${startDate}, endDate=${endDate}, status=${status})}">下一页</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/attendance/worker/{id}(id=${worker.id}, page=${totalPages - 1}, size=10, startDate=${startDate}, endDate=${endDate}, status=${status})}">末页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页面特定的JavaScript -->
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 加载考勤统计数据
+                loadAttendanceStats();
+                
+                // 导出Excel按钮
+                $('#exportBtn').click(function() {
+                    const workerId = [[${worker.id}]];
+                    const startDate = $('input[name="startDate"]').val();
+                    const endDate = $('input[name="endDate"]').val();
+                    const status = $('select[name="status"]').val();
+                    
+                    // 构建下载URL
+                    let url = `/api/attendance/export?workerId=${workerId}`;
+                    if (startDate) url += `&startDate=${startDate}`;
+                    if (endDate) url += `&endDate=${endDate}`;
+                    if (status) url += `&status=${status}`;
+                    
+                    // 下载文件
+                    window.location.href = url;
+                });
+                
+                function loadAttendanceStats() {
+                    const workerId = [[${worker.id}]];
+                    const today = new Date();
+                    
+                    // 构建当月开始和结束日期
+                    const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    
+                    // AJAX请求获取统计数据
+                    $.ajax({
+                        url: '/api/attendance/stats',
+                        type: 'GET',
+                        data: {
+                            workerId: workerId,
+                            startDate: formatDate(startDate),
+                            endDate: formatDate(endDate)
+                        },
+                        success: function(response) {
+                            if (response) {
+                                $('#normalCount').text(response.normal || 0);
+                                $('#lateCount').text(response.late || 0);
+                                $('#earlyLeaveCount').text(response.earlyLeave || 0);
+                                $('#absentCount').text(response.absent || 0);
+                            }
+                        },
+                        error: function() {
+                            // 错误处理，显示默认值
+                            $('#normalCount, #lateCount, #earlyLeaveCount, #absentCount').text('0');
+                        }
+                    });
+                }
+                
+                // 日期格式化函数
+                function formatDate(date) {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                }
+            });
+        </script>
+ 

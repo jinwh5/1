@@ -1,0 +1,23 @@
+[ {
+  "id" : 1,
+  "location" : "郑州市金水区花园路",
+  "date" : "2025-05-13",
+  "weatherCondition" : "阴",
+  "temperature" : 18.543561063581222,
+  "rainfall" : 0.5502925403467682,
+  "windSpeed" : 8.780051728111317,
+  "weatherAlert" : null,
+  "suitableForWork" : true,
+  "workSuggestion" : "有降雨，请做好防雨措施。风速较大，请注意高空作业安全。"
+}, {
+  "id" : 2,
+  "location" : "郑州市金水区花园路",
+  "date" : "2025-05-14",
+  "weatherCondition" : "多云",
+  "temperature" : 17.997049547618897,
+  "rainfall" : 0.0,
+  "windSpeed" : 0.14230163042248645,
+  "weatherAlert" : null,
+  "suitableForWork" : true,
+  "workSuggestion" : "天气适合施工，请正常作业。"
+} ]

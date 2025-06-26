@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title th:text="${worker.id == null ? '添加工人' : '编辑工人'}"></title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-user-edit text-primary mr-2"></i>
+                <span th:text="${worker.id == null ? '添加工人' : '编辑工人'}"></span>
+            </h2>
+            <a th:href="@{/workers}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left mr-1"></i>返回列表
+            </a>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/workers/save}" method="post" th:object="${worker}">
+                    <!-- 隐藏ID字段 -->
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="row">
+                        <!-- 基本信息 -->
+                        <div class="col-md-6">
+                            <h5 class="mb-3 border-bottom pb-2">基本信息</h5>
+                            
+                            <div class="form-group">
+                                <label for="name">姓名</label>
+                                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="gender">性别</label>
+                                    <select class="form-control" id="gender" th:field="*{gender}">
+                                        <option value="男">男</option>
+                                        <option value="女">女</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group col-md-6">
+                                    <label for="age">年龄</label>
+                                    <input type="number" class="form-control" id="age" th:field="*{age}" min="18" max="70">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="idCard">身份证号</label>
+                                <input type="text" class="form-control" id="idCard" th:field="*{idCard}" 
+                                       pattern="[0-9]{17}[0-9Xx]" title="请输入18位有效身份证号">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">电话号码</label>
+                                <input type="tel" class="form-control" id="phone" th:field="*{phone}" 
+                                       pattern="[0-9]{11}" title="请输入11位手机号码">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="address">地址</label>
+                                <textarea class="form-control" id="address" th:field="*{address}" rows="2"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- 工作信息 -->
+                        <div class="col-md-6">
+                            <h5 class="mb-3 border-bottom pb-2">工作信息</h5>
+                            
+                            <div class="form-group">
+                                <label for="position">职位</label>
+                                <select class="form-control" id="position" th:field="*{position}">
+                                    <option value="施工员">施工员</option>
+                                    <option value="机械操作员">机械操作员</option>
+                                    <option value="项目经理">项目经理</option>
+                                    <option value="安全员">安全员</option>
+                                    <option value="电工">电工</option>
+                                    <option value="其他">其他</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="hireDate">入职日期</label>
+                                <input type="date" class="form-control" id="hireDate" th:field="*{hireDate}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="status">状态</label>
+                                <select class="form-control" id="status" th:field="*{status}">
+                                    <option value="在职">在职</option>
+                                    <option value="离职">离职</option>
+                                    <option value="休假">休假</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="remarks">备注</label>
+                                <textarea class="form-control" id="remarks" th:field="*{remarks}" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group text-center mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mr-1"></i>保存
+                        </button>
+                        <a th:href="@{/workers}" class="btn btn-secondary ml-2">
+                            <i class="fas fa-times mr-1"></i>取消
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页面特定的JavaScript -->
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 表单验证
+                $('form').submit(function() {
+                    // 身份证验证
+                    let idCard = $('#idCard').val();
+                    if (idCard && idCard.length > 0) {
+                        if (idCard.length !== 18) {
+                            alert('身份证号必须为18位');
+                            return false;
+                        }
+                    }
+                    
+                    // 电话号码验证
+                    let phone = $('#phone').val();
+                    if (phone && phone.length > 0) {
+                        if (phone.length !== 11) {
+                            alert('请输入11位手机号码');
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html> 

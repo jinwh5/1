@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑安全监控记录</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h2>编辑安全监控记录</h2>
+            </div>
+            <div class="col text-right">
+                <a th:href="@{/safety}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> 返回列表
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/safety/{id}(id=${record.id})}" method="post" id="safetyRecordForm">
+                    <input type="hidden" name="_method" value="put">
+                    <input type="hidden" id="id" name="id" th:value="${record.id}">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="workerId">工人ID <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="workerId" name="workerId" th:value="${record.workerId}" required>
+                            <div class="invalid-feedback">请输入工人ID</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="projectId">项目ID <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="projectId" name="projectId" th:value="${record.projectId}" required>
+                            <div class="invalid-feedback">请输入项目ID</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="eventType">事件类型 <span class="text-danger">*</span></label>
+                            <select class="form-control" id="eventType" name="eventType" required>
+                                <option value="">请选择事件类型</option>
+                                <option value="安全帽未戴" th:selected="${record.eventType == '安全帽未戴'}">安全帽未戴</option>
+                                <option value="违规操作" th:selected="${record.eventType == '违规操作'}">违规操作</option>
+                                <option value="设备故障" th:selected="${record.eventType == '设备故障'}">设备故障</option>
+                                <option value="其他" th:selected="${record.eventType == '其他'}">其他</option>
+                            </select>
+                            <div class="invalid-feedback">请选择事件类型</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="severityLevel">严重程度 <span class="text-danger">*</span></label>
+                            <select class="form-control" id="severityLevel" name="severityLevel" required>
+                                <option value="">请选择严重程度</option>
+                                <option value="低" th:selected="${record.severityLevel == '低'}">低</option>
+                                <option value="中" th:selected="${record.severityLevel == '中'}">中</option>
+                                <option value="高" th:selected="${record.severityLevel == '高'}">高</option>
+                            </select>
+                            <div class="invalid-feedback">请选择严重程度</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="occurrenceTime">发生时间 <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="occurrenceTime" name="occurrenceTime" 
+                                   th:value="${#temporals.format(record.occurrenceTime, 'yyyy-MM-dd''T''HH:mm')}" required>
+                            <div class="invalid-feedback">请选择发生时间</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="location">位置 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="location" name="location" th:value="${record.location}" required>
+                            <div class="invalid-feedback">请输入位置</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description">事件描述 <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required th:text="${record.description}"></textarea>
+                        <div class="invalid-feedback">请输入事件描述</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="status">处理状态 <span class="text-danger">*</span></label>
+                            <select class="form-control" id="status" name="status" required>
+                                <option value="待处理" th:selected="${record.status == '待处理'}">待处理</option>
+                                <option value="处理中" th:selected="${record.status == '处理中'}">处理中</option>
+                                <option value="已处理" th:selected="${record.status == '已处理'}">已处理</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="handler">处理人</label>
+                            <input type="text" class="form-control" id="handler" name="handler" th:value="${record.handler}">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="handleTime">处理时间</label>
+                            <input type="datetime-local" class="form-control" id="handleTime" name="handleTime" 
+                                   th:value="${record.handleTime != null ? #temporals.format(record.handleTime, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="result">处理结果</label>
+                            <input type="text" class="form-control" id="result" name="result" th:value="${record.result}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="measures">处理措施</label>
+                        <textarea class="form-control" id="measures" name="measures" rows="2" th:text="${record.measures}"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="remarks">备注</label>
+                        <textarea class="form-control" id="remarks" name="remarks" rows="2" th:text="${record.remarks}"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <a th:href="@{/safety}" class="btn btn-secondary">取消</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // 表单验证
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+</body>
+</html> 

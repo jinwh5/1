@@ -1,0 +1,78 @@
+[ {
+  "id" : 1,
+  "location" : "郑州市金水区花园路",
+  "date" : "2025-04-27",
+  "weatherCondition" : "雷阵雨",
+  "temperature" : 22.549918199476686,
+  "rainfall" : 14.097725394272482,
+  "windSpeed" : 14.255334766779862,
+  "weatherAlert" : "有雷阵雨，请注意防雷安全。",
+  "suitableForWork" : false,
+  "workSuggestion" : "有降雨，请做好防雨措施。风速较大，请注意高空作业安全。"
+}, {
+  "id" : 2,
+  "location" : "郑州市金水区花园路",
+  "date" : "2025-04-28",
+  "weatherCondition" : "小雨",
+  "temperature" : 15.30098790288762,
+  "rainfall" : 2.8814780430828195,
+  "windSpeed" : 1.4352746523039803,
+  "weatherAlert" : null,
+  "suitableForWork" : true,
+  "workSuggestion" : "有降雨，请做好防雨措施。"
+}, {
+  "id" : 3,
+  "location" : "郑州市金水区花园路",
+  "date" : "2025-04-29",
+  "weatherCondition" : "大雨",
+  "temperature" : 3.3261001566377217,
+  "rainfall" : 11.28958270631207,
+  "windSpeed" : 1.8586498656347294,
+  "weatherAlert" : null,
+  "suitableForWork" : false,
+  "workSuggestion" : "有降雨，请做好防雨措施。气温较低，请做好保暖。"
+}, {
+  "id" : 4,
+  "location" : "郑州市金水区花园路",
+  "date" : "2025-05-06",
+  "weatherCondition" : "晴",
+  "temperature" : 23.10463655206485,
+  "rainfall" : 0.0,
+  "windSpeed" : 0.20068716689303046,
+  "weatherAlert" : null,
+  "suitableForWork" : true,
+  "workSuggestion" : "天气适合施工，请正常作业。"
+}, {
+  "id" : 5,
+  "location" : "郑州市金水区花园路",
+  "date" : "2025-05-07",
+  "weatherCondition" : "大雨",
+  "temperature" : 3.916819106607435,
+  "rainfall" : 18.762624053032173,
+  "windSpeed" : 17.71841910961247,
+  "weatherAlert" : null,
+  "suitableForWork" : false,
+  "workSuggestion" : "有降雨，请做好防雨措施。风速较大，请注意高空作业安全。气温较低，请做好保暖。"
+}, {
+  "id" : 6,
+  "location" : "郑州市金水区花园路",
+  "date" : "2025-05-13",
+  "weatherCondition" : "晴",
+  "temperature" : 24.38873862356931,
+  "rainfall" : 0.0,
+  "windSpeed" : 0.36943434397674557,
+  "weatherAlert" : null,
+  "suitableForWork" : true,
+  "workSuggestion" : "天气适合施工，请正常作业。"
+}, {
+  "id" : 7,
+  "location" : "郑州市金水区花园路",
+  "date" : "2025-05-14",
+  "weatherCondition" : "小雨",
+  "temperature" : 11.461157372809089,
+  "rainfall" : 3.057911277369994,
+  "windSpeed" : 5.545341172828719,
+  "weatherAlert" : null,
+  "suitableForWork" : true,
+  "workSuggestion" : "有降雨，请做好防雨措施。风速较大，请注意高空作业安全。"
+} ]

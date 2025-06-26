@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <!-- 侧边栏组件 -->
+    <div th:fragment="sidebar" class="sidebar" id="sidebar">
+        <!-- 侧边栏标题 -->
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-brand">
+                <img src="/img/logo.png" alt="Logo" />
+                <span>施工管理系统</span>
+            </a>
+            <button type="button" class="btn-close text-reset d-lg-none" id="closeSidebar" aria-label="关闭"></button>
+        </div>
+        
+        <!-- 用户信息 -->
+        <div class="sidebar-user">
+            <img th:src="${session.user != null ? session.user.avatar : '/img/default-avatar.png'}" alt="用户头像" class="sidebar-user-avatar">
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-name" th:text="${session.user != null ? session.user.name : '未登录'}">用户名</div>
+                <div class="sidebar-user-role" th:text="${session.user != null ? session.user.role : '访客'}">用户角色</div>
+            </div>
+        </div>
+        
+        <!-- 侧边栏菜单 -->
+        <div class="sidebar-menu">
+            <!-- 主要菜单 -->
+            <div class="sidebar-menu-title">主要功能</div>
+            
+            <a th:href="@{/dashboard}" class="sidebar-menu-item" th:classappend="${page == 'dashboard' ? 'active' : ''}">
+                <i class="bi bi-house-door sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">首页</span>
+            </a>
+            
+            <!-- 施工人员管理菜单 -->
+            <a href="javascript:void(0)" class="sidebar-menu-item" th:classappend="${page == 'personnel' ? 'active' : ''}" 
+               data-bs-toggle="collapse" data-bs-target="#personnelMenu" aria-expanded="false">
+                <i class="bi bi-people sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">人员管理</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <div class="sidebar-submenu collapse" th:classappend="${page == 'personnel' ? 'show' : ''}" id="personnelMenu">
+                <a th:href="@{/personnel/list}" class="sidebar-submenu-item" th:classappend="${subpage == 'personnel-list' ? 'active' : ''}">人员列表</a>
+                <a th:href="@{/personnel/attendance}" class="sidebar-submenu-item" th:classappend="${subpage == 'attendance' ? 'active' : ''}">考勤管理</a>
+                <a th:href="@{/personnel/qualifications}" class="sidebar-submenu-item" th:classappend="${subpage == 'qualifications' ? 'active' : ''}">资质证书</a>
+                <a th:href="@{/personnel/training}" class="sidebar-submenu-item" th:classappend="${subpage == 'training' ? 'active' : ''}">培训记录</a>
+            </div>
+            
+            <!-- 项目管理菜单 -->
+            <a href="javascript:void(0)" class="sidebar-menu-item" th:classappend="${page == 'projects' ? 'active' : ''}"
+               data-bs-toggle="collapse" data-bs-target="#projectsMenu" aria-expanded="false">
+                <i class="bi bi-clipboard-check sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">项目管理</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <div class="sidebar-submenu collapse" th:classappend="${page == 'projects' ? 'show' : ''}" id="projectsMenu">
+                <a th:href="@{/projects/list}" class="sidebar-submenu-item" th:classappend="${subpage == 'projects-list' ? 'active' : ''}">项目列表</a>
+                <a th:href="@{/projects/progress}" class="sidebar-submenu-item" th:classappend="${subpage == 'progress' ? 'active' : ''}">进度跟踪</a>
+                <a th:href="@{/projects/cost}" class="sidebar-submenu-item" th:classappend="${subpage == 'cost' ? 'active' : ''}">成本控制</a>
+                <a th:href="@{/projects/quality}" class="sidebar-submenu-item" th:classappend="${subpage == 'quality' ? 'active' : ''}">质量管理</a>
+            </div>
+            
+            <!-- 设备管理菜单 -->
+            <a href="javascript:void(0)" class="sidebar-menu-item" th:classappend="${page == 'equipment' ? 'active' : ''}"
+               data-bs-toggle="collapse" data-bs-target="#equipmentMenu" aria-expanded="false">
+                <i class="bi bi-truck sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">设备管理</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <div class="sidebar-submenu collapse" th:classappend="${page == 'equipment' ? 'show' : ''}" id="equipmentMenu">
+                <a th:href="@{/equipment/list}" class="sidebar-submenu-item" th:classappend="${subpage == 'equipment-list' ? 'active' : ''}">设备列表</a>
+                <a th:href="@{/equipment/maintenance}" class="sidebar-submenu-item" th:classappend="${subpage == 'maintenance' ? 'active' : ''}">维护保养</a>
+                <a th:href="@{/equipment/allocation}" class="sidebar-submenu-item" th:classappend="${subpage == 'allocation' ? 'active' : ''}">调度分配</a>
+            </div>
+            
+            <!-- 安全管理菜单 -->
+            <a href="javascript:void(0)" class="sidebar-menu-item" th:classappend="${page == 'safety' ? 'active' : ''}"
+               data-bs-toggle="collapse" data-bs-target="#safetyMenu" aria-expanded="false">
+                <i class="bi bi-shield-check sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">安全管理</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <div class="sidebar-submenu collapse" th:classappend="${page == 'safety' ? 'show' : ''}" id="safetyMenu">
+                <a th:href="@{/safety/inspections}" class="sidebar-submenu-item" th:classappend="${subpage == 'inspections' ? 'active' : ''}">安全检查</a>
+                <a th:href="@{/safety/incidents}" class="sidebar-submenu-item" th:classappend="${subpage == 'incidents' ? 'active' : ''}">事故记录</a>
+                <a th:href="@{/safety/measures}" class="sidebar-submenu-item" th:classappend="${subpage == 'measures' ? 'active' : ''}">安全措施</a>
+            </div>
+            
+            <!-- 数据分析菜单 -->
+            <div class="sidebar-menu-title">数据分析</div>
+            
+            <a th:href="@{/analytics/dashboard}" class="sidebar-menu-item" th:classappend="${page == 'analytics' ? 'active' : ''}">
+                <i class="bi bi-bar-chart-line sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">数据看板</span>
+            </a>
+            
+            <div class="logo">
+                <a th:href="@{/dashboard}">
+                    <img th:src="@{/images/logo.png}" alt="公路施工管理" class="img-fluid" />
+                </a>
+            </div>
+            <div class="profile-info mt-3">
+                <div class="user-avatar">
+                    <img th:src="${session.user != null ? session.user.avatar : '/images/default-avatar.png'}" 
+                         alt="用户头像" class="rounded-circle" />
+                </div>
+                <div class="user-details mt-2">
+                    <h6 class="mb-0" th:text="${session.user != null ? session.user.name : '未登录'}">用户名</h6>
+                    <span class="badge bg-primary" th:text="${session.user != null ? session.user.roleName : ''}">角色</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <!-- 仪表盘 -->
+                <li class="nav-item">
+                    <a th:href="@{/dashboard}" class="nav-link" 
+                       th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard' ? 'active' : ''}">
+                        <i class="bi bi-speedometer2"></i> <span>仪表盘</span>
+                    </a>
+                </li>
+                
+                <!-- 人员管理 -->
+                <li class="nav-item">
+                    <a href="#personnelSubmenu" data-bs-toggle="collapse" class="nav-link"
+                       th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/personnel') ? 'active' : ''}">
+                        <i class="bi bi-people"></i> <span>人员管理</span>
+                        <i class="bi bi-caret-down-fill ms-auto"></i>
+                    </a>
+                    <ul class="collapse nav flex-column" id="personnelSubmenu" 
+                        th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/personnel') ? 'show' : ''}">
+                        <li class="nav-item">
+                            <a th:href="@{/personnel/list}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/personnel/list' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>人员列表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/personnel/add}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/personnel/add' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>添加人员</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/personnel/certificate}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/personnel/certificate' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>证书管理</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- 考勤管理 -->
+                <li class="nav-item">
+                    <a href="#attendanceSubmenu" data-bs-toggle="collapse" class="nav-link"
+                       th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/attendance') ? 'active' : ''}">
+                        <i class="bi bi-calendar-check"></i> <span>考勤管理</span>
+                        <i class="bi bi-caret-down-fill ms-auto"></i>
+                    </a>
+                    <ul class="collapse nav flex-column" id="attendanceSubmenu"
+                        th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/attendance') ? 'show' : ''}">
+                        <li class="nav-item">
+                            <a th:href="@{/attendance/daily}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/attendance/daily' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>日常考勤</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/attendance/statistics}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/attendance/statistics' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>考勤统计</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/attendance/leave}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/attendance/leave' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>请假管理</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- 工资管理 -->
+                <li class="nav-item">
+                    <a href="#salarySubmenu" data-bs-toggle="collapse" class="nav-link"
+                       th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/salary') ? 'active' : ''}">
+                        <i class="bi bi-cash-stack"></i> <span>工资管理</span>
+                        <i class="bi bi-caret-down-fill ms-auto"></i>
+                    </a>
+                    <ul class="collapse nav flex-column" id="salarySubmenu"
+                        th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/salary') ? 'show' : ''}">
+                        <li class="nav-item">
+                            <a th:href="@{/salary/calculator}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/salary/calculator' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>工资计算</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/salary/payment}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/salary/payment' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>发放记录</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/salary/template}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/salary/template' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>工资模板</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- 项目管理 -->
+                <li class="nav-item">
+                    <a href="#projectSubmenu" data-bs-toggle="collapse" class="nav-link"
+                       th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/project') ? 'active' : ''}">
+                        <i class="bi bi-building"></i> <span>项目管理</span>
+                        <i class="bi bi-caret-down-fill ms-auto"></i>
+                    </a>
+                    <ul class="collapse nav flex-column" id="projectSubmenu"
+                        th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/project') ? 'show' : ''}">
+                        <li class="nav-item">
+                            <a th:href="@{/project/list}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/project/list' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>项目列表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/project/teams}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/project/teams' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>施工队伍</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/project/progress}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/project/progress' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>进度跟踪</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- 安全管理 -->
+                <li class="nav-item">
+                    <a href="#safetySubmenu" data-bs-toggle="collapse" class="nav-link"
+                       th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/safety') ? 'active' : ''}">
+                        <i class="bi bi-shield-check"></i> <span>安全管理</span>
+                        <i class="bi bi-caret-down-fill ms-auto"></i>
+                    </a>
+                    <ul class="collapse nav flex-column" id="safetySubmenu"
+                        th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/safety') ? 'show' : ''}">
+                        <li class="nav-item">
+                            <a th:href="@{/safety/training}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/safety/training' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>安全培训</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/safety/incident}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/safety/incident' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>事故记录</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/safety/inspection}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/safety/inspection' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>安全检查</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- 系统管理 -->
+                <li class="nav-item" th:if="${session.user != null && #strings.contains(session.user.roleName, '管理员')}">
+                    <a href="#systemSubmenu" data-bs-toggle="collapse" class="nav-link"
+                       th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/system') ? 'active' : ''}">
+                        <i class="bi bi-gear"></i> <span>系统管理</span>
+                        <i class="bi bi-caret-down-fill ms-auto"></i>
+                    </a>
+                    <ul class="collapse nav flex-column" id="systemSubmenu"
+                        th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(), '/system') ? 'show' : ''}">
+                        <li class="nav-item">
+                            <a th:href="@{/system/users}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/system/users' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>用户管理</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/system/roles}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/system/roles' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>角色权限</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/system/logs}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/system/logs' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>系统日志</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/system/settings}" class="nav-link"
+                               th:classappend="${#httpServletRequest.getRequestURI() == '/system/settings' ? 'active' : ''}">
+                                <i class="bi bi-circle"></i> <span>系统设置</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="footer-buttons">
+                <a href="#" class="btn btn-sm btn-link" data-bs-toggle="tooltip" title="帮助文档">
+                    <i class="bi bi-question-circle"></i>
+                </a>
+                <a th:href="@{/profile}" class="btn btn-sm btn-link" data-bs-toggle="tooltip" title="个人资料">
+                    <i class="bi bi-person"></i>
+                </a>
+                <a th:href="@{/logout}" class="btn btn-sm btn-link" data-bs-toggle="tooltip" title="退出登录">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+            <div class="system-version mt-2">
+                <small class="text-muted">系统版本 v1.0.0</small>
+            </div>
+        </div>
+    </nav>
+</body>
+</html> 
